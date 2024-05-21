@@ -2,17 +2,21 @@ package servent;
 
 import app.AppConfig;
 import app.Cancellable;
-import servent.handler.MessageHandler;
-import servent.handler.NullHandler;
+import servent.handler.*;
 import servent.message.Message;
 import servent.message.util.MessageUtil;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SimpleServentListener implements Runnable, Cancellable {
     private volatile boolean working = true;
+
+    private final ExecutorService threadPool = Executors.newWorkStealingPool();
 
     public SimpleServentListener() {
     }
@@ -26,7 +30,8 @@ public class SimpleServentListener implements Runnable, Cancellable {
             // if no data arrives within 1000ms a SocketTimeoutException will be thrown.
             listenerSocket.setSoTimeout(1000);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            AppConfig.timestampedErrorPrint("Couldn't open listener socket on: " + AppConfig.myServentInfo.getListenerPort());
+            System.exit(0);
         }
 
         while(working) {
@@ -38,8 +43,22 @@ public class SimpleServentListener implements Runnable, Cancellable {
                 MessageHandler messageHandler = new NullHandler(clientMessage);
 
                 switch (clientMessage.getMessageType()) {
-
+                    case PING:
+                        messageHandler = new PingHandler(clientMessage);
+                        break;
+                    case PONG:
+                        messageHandler = new PongHandler(clientMessage);
+                        break;
+                    case NEW_NODE:
+                        messageHandler = new NewNodeHandler(clientMessage);
+                        break;
+                    case TELL_NEW_NODE:
+                        messageHandler = new TellNewNodeHandler(clientMessage);
+                        break;
                 }
+                threadPool.submit(messageHandler);
+            } catch (SocketTimeoutException timeoutException) {
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

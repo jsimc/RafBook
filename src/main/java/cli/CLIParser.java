@@ -1,11 +1,13 @@
 package cli;
 
+import app.AppConfig;
 import app.Cancellable;
 import cli.command.*;
 import servent.SimpleServentListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class CLIParser implements Runnable, Cancellable {
     private volatile boolean working = true;
@@ -25,7 +27,37 @@ public class CLIParser implements Runnable, Cancellable {
 
     @Override
     public void run() {
+        Scanner sc = new Scanner(System.in);
 
+        while(working) {
+            String commandLine = sc.nextLine();
+
+            int spacePos = commandLine.indexOf(" ");
+
+            String commandName = null;
+            String commandArgs = null;
+            if(spacePos != -1) {
+                commandName = commandLine.substring(0, spacePos);
+                commandArgs = commandLine.substring(spacePos+1, commandLine.length());
+            } else {
+                commandName = commandLine;
+            }
+
+            boolean found = false;
+
+            for (CLICommand cliCommand : commandList) {
+                if(cliCommand.commandName().equals(commandName)) {
+                    cliCommand.execute(commandArgs);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                AppConfig.timestampedErrorPrint("Unknown command: " + commandName);
+            }
+        }
+        sc.close();
     }
 
     @Override

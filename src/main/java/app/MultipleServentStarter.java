@@ -8,7 +8,30 @@ import java.util.Scanner;
 
 public class MultipleServentStarter {
 
+    private static class ServentCLI implements Runnable {
+        private List<Process> serventProcesses;
+        private Process bsProcess;
+        public ServentCLI(List<Process> serventProcesses, Process bsProcess) {
+            this.serventProcesses = serventProcesses;
+            this.bsProcess = bsProcess;
+        }
+        @Override
+        public void run() {
+            Scanner sc = new Scanner(System.in);
+            while(true) {
+                String line = sc.nextLine();
 
+                if(line.equals("stop")) {
+                    for(Process process : serventProcesses) {
+                        process.destroy();
+                    }
+                    bsProcess.destroy();
+                    break;
+                }
+            }
+            sc.close();
+        }
+    }
 
     private static void startServentTest(String testName) {
         List<Process> serventProcesses = new ArrayList<>();
@@ -75,30 +98,7 @@ public class MultipleServentStarter {
     }
 
     public static void main(String[] args) {
+//        startServentTest("kademlia");
         startServentTest("chord"); // chord mozda cu ja nesto drugo da radim ?
-    }
-    private static class ServentCLI implements Runnable {
-        private List<Process> serventProcesses;
-        private Process bsProcess;
-        public ServentCLI(List<Process> serventProcesses, Process bsProcess) {
-            this.serventProcesses = serventProcesses;
-            this.bsProcess = bsProcess;
-        }
-        @Override
-        public void run() {
-            Scanner sc = new Scanner(System.in);
-            while(true) {
-                String line = sc.nextLine();
-
-                if(line.equals("stop")) {
-                    for(Process process : serventProcesses) {
-                        process.destroy();
-                    }
-                    bsProcess.destroy();
-                    break;
-                }
-            }
-            sc.close();
-        }
     }
 }
