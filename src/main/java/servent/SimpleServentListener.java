@@ -61,6 +61,15 @@ public class SimpleServentListener implements Runnable, Cancellable {
                     case PUT:
                         messageHandler = new DHTPutHandler(clientMessage);
                         break;
+                    case FAIL_GET:
+                        messageHandler = new DHTGetFailHandler(clientMessage);
+                        break;
+                    case TELL_GET:
+                        messageHandler = new DHTTellGetHandler(clientMessage);
+                        break;
+                    case ASK_GET:
+                        messageHandler = new DHTGetHandler(clientMessage);
+                        break;
                 }
                 threadPool.submit(messageHandler);
             } catch (SocketTimeoutException timeoutException) {

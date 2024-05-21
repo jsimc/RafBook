@@ -38,6 +38,8 @@ public class DHTPutHandler implements MessageHandler {
                 DHTPutMessage dhtPutMessage1 = new DHTPutMessage(AppConfig.myServentInfo.getListenerPort(), serventInfo.getListenerPort(), key, value);
                 MessageUtil.sendMessage(dhtPutMessage1);
             }
+        }  else {
+            AppConfig.timestampedErrorPrint("PUT Handler got something else: " + clientMessage.getMessageType());
         }
     }
 }
