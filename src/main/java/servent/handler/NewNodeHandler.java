@@ -2,7 +2,6 @@ package servent.handler;
 
 import app.AppConfig;
 import app.ServentInfo;
-import app.kademlia.Bucket;
 import app.kademlia.FindNodeAnswer;
 import servent.message.*;
 import servent.message.util.MessageUtil;

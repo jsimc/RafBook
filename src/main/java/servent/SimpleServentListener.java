@@ -55,6 +55,12 @@ public class SimpleServentListener implements Runnable, Cancellable {
                     case TELL_NEW_NODE:
                         messageHandler = new TellNewNodeHandler(clientMessage);
                         break;
+                    case SORRY:
+                        messageHandler = new SorryHandler(clientMessage);
+                        break;
+                    case PUT:
+                        messageHandler = new DHTPutHandler(clientMessage);
+                        break;
                 }
                 threadPool.submit(messageHandler);
             } catch (SocketTimeoutException timeoutException) {

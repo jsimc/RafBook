@@ -5,6 +5,7 @@ import app.ServentInfo;
 import app.exceptions.FullBucketException;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RoutingTableImpl implements RoutingTable {
@@ -14,6 +15,7 @@ public class RoutingTableImpl implements RoutingTable {
 
     public RoutingTableImpl() {
         this.buckets = new CopyOnWriteArrayList<>();
+        this.valueMap = new ConcurrentHashMap<>();
         for (int i = 0; i <= AppConfig.ID_SIZE; i++) { // 0, 1, 2, 3, 4, 5, 6
             buckets.add(new BucketImpl(i));
         }
