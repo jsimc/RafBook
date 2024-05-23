@@ -51,9 +51,11 @@ public class TellNewNodeHandler implements MessageHandler {
                 if (serventInfo.getHashId() == AppConfig.myServentInfo.getHashId()){
                     return;
                 }
+                if(serventInfo.getHashId() == tellNewNodeMessage.getSender().getHashId()) AppConfig.routingTable.update(serventInfo);
+
                 int isNew = AppConfig.routingTable.update(serventInfo);
                 if(isNew == 0) {
-                    NewNodeMessage newNodeMessage = new NewNodeMessage(AppConfig.myServentInfo.getListenerPort(), serventInfo.getListenerPort(), AppConfig.myServentInfo);
+                    NewNodeMessage newNodeMessage = new NewNodeMessage(AppConfig.myServentInfo, serventInfo, AppConfig.myServentInfo);
                     MessageUtil.sendMessage(newNodeMessage);
                 }
             });

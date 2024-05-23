@@ -19,7 +19,6 @@ public class NewNodeHandler implements MessageHandler {
         if(clientMessage.getMessageType() == MessageType.NEW_NODE) {
             NewNodeMessage newNodeMessage = (NewNodeMessage) clientMessage;
             ServentInfo newNodeInfo = newNodeMessage.getNewServentInfo();
-            int newNodePort = newNodeInfo.getListenerPort();
             int newNodeId = newNodeInfo.getHashId();
 
             FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(newNodeId);
@@ -28,15 +27,11 @@ public class NewNodeHandler implements MessageHandler {
             if(add == 0) {
                 AppConfig.timestampedStandardPrint("Novi u routingTable: " + newNodeId);
             } else if (add == -1){
-                // ako vec postoji u routing table onda bi trebalo vratiti da je kolizija
                 AppConfig.timestampedStandardPrint("Collision: " + newNodeId + " already exists.");
-//                AppConfig.timestampedErrorPrint("Collision: " + newNodeId + " already exists.");
-//                SorryMessage sorryMessage = new SorryMessage(AppConfig.myServentInfo.getListenerPort(), newNodePort);
-//                MessageUtil.sendMessage(sorryMessage);
                 return;
             }
 
-            TellNewNodeMessage tellNewNodeMessage = new TellNewNodeMessage(AppConfig.myServentInfo.getListenerPort(), newNodePort, findNodeAnswer);
+            TellNewNodeMessage tellNewNodeMessage = new TellNewNodeMessage(AppConfig.myServentInfo, newNodeInfo, findNodeAnswer);
             if(newNodeMessage.isInitializer()) {
                 tellNewNodeMessage.setInit(true);
             }

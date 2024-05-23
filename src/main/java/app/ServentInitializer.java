@@ -23,7 +23,8 @@ public class ServentInitializer implements Runnable {
         } else { //bootstrap gave us something else - let that node tell our successor that we are here
             // new node in the system message
             AppConfig.timestampedStandardPrint("New node in system.");
-            NewNodeMessage nnm = new NewNodeMessage(AppConfig.myServentInfo.getListenerPort(), someServentPort, AppConfig.myServentInfo);
+            ServentInfo someServent = new ServentInfo(-1, "localhost", someServentPort);
+            NewNodeMessage nnm = new NewNodeMessage(AppConfig.myServentInfo, someServent, AppConfig.myServentInfo);
             nnm.setInitializer(true);
             MessageUtil.sendMessage(nnm);
         }

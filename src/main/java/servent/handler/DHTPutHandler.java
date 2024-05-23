@@ -34,8 +34,9 @@ public class DHTPutHandler implements MessageHandler {
                     AppConfig.routingTable.putValue(key, value);
                     continue;
                 }
+                if(serventInfo.getHashId() == dhtPutMessage.getSender().getHashId()) continue;
 
-                DHTPutMessage dhtPutMessage1 = new DHTPutMessage(AppConfig.myServentInfo.getListenerPort(), serventInfo.getListenerPort(), key, value);
+                DHTPutMessage dhtPutMessage1 = new DHTPutMessage(AppConfig.myServentInfo, serventInfo, key, value);
                 MessageUtil.sendMessage(dhtPutMessage1);
             }
         }  else {

@@ -8,7 +8,7 @@ public class NewNodeMessage extends BasicMessage {
     private final ServentInfo newServentInfo;
     private boolean initializer = false;
 
-    public NewNodeMessage(int senderPort, int receiverPort, ServentInfo newServentInfo) {
+    public NewNodeMessage(ServentInfo senderPort, ServentInfo receiverPort, ServentInfo newServentInfo) {
         super(MessageType.NEW_NODE, senderPort, receiverPort);
         this.newServentInfo = newServentInfo;
     }

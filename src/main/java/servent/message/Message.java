@@ -1,5 +1,7 @@
 package servent.message;
 
+import app.ServentInfo;
+
 import java.io.Serializable;
 
 public interface Message extends Serializable {
@@ -9,4 +11,7 @@ public interface Message extends Serializable {
     MessageType getMessageType();
     String getMessageText();
     int getMessageId();
+
+    ServentInfo getReceiver();
+    ServentInfo getSender();
 }

@@ -1,5 +1,7 @@
 package servent.message;
 
+import app.ServentInfo;
+
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,19 +16,26 @@ public class BasicMessage implements Message {
     private static AtomicInteger messageCounter = new AtomicInteger(0);
     private final int messageId;
 
-    public BasicMessage(MessageType type, int senderPort, int receiverPort) {
+    private final ServentInfo sender;
+
+    private final ServentInfo receiver;
+    public BasicMessage(MessageType type, ServentInfo sender, ServentInfo receiver) {
         this.type = type;
-        this.senderPort = senderPort;
-        this.receiverPort = receiverPort;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.senderPort = sender.getListenerPort();
+        this.receiverPort = receiver.getListenerPort();
         this.messageText = "";
 
         this.messageId = messageCounter.getAndIncrement();
     }
 
-    public BasicMessage(MessageType type, int senderPort, int receiverPort, String messageText) {
+    public BasicMessage(MessageType type, ServentInfo sender, ServentInfo receiver, String messageText) {
         this.type = type;
-        this.senderPort = senderPort;
-        this.receiverPort = receiverPort;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.senderPort = sender.getListenerPort();
+        this.receiverPort = receiver.getListenerPort();
         this.messageText = messageText;
 
         this.messageId = messageCounter.getAndIncrement();
@@ -60,6 +69,16 @@ public class BasicMessage implements Message {
     @Override
     public int getMessageId() {
         return this.messageId;
+    }
+
+    @Override
+    public ServentInfo getReceiver() {
+        return this.receiver;
+    }
+
+    @Override
+    public ServentInfo getSender() {
+        return this.sender;
     }
 
     @Override

@@ -16,7 +16,9 @@ public class TestClass {
         myList.add(7);
         myList.add(0, 8);
         myList.add(0, 10);
-        System.out.println("Hello: " + myList);
+        System.out.println("List: " + myList);
+        myList.remove(myList.size()-1);
+        System.out.println("List: " + myList);
 //        for (int i = 0; i < myList.size(); i++) {
 //            System.out.println(myList.get(i));
 //        }

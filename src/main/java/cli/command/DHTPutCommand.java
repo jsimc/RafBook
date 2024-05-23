@@ -50,7 +50,7 @@ public class DHTPutCommand implements CLICommand {
                         continue;
                     }
 
-                    DHTPutMessage dhtPutMessage = new DHTPutMessage(AppConfig.myServentInfo.getListenerPort(), serventInfo.getListenerPort(), key, value);
+                    DHTPutMessage dhtPutMessage = new DHTPutMessage(AppConfig.myServentInfo, serventInfo, key, value);
                     MessageUtil.sendMessage(dhtPutMessage);
                 }
 

@@ -1,24 +1,27 @@
 package servent.message;
 
+import app.ServentInfo;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DHTGetMessage extends BasicMessage {
     private static final long serialVersionUID = -1934907147043909222L;
     private final int key;
-    private final int originalSenderPort;
-
+    private final ServentInfo originalSender;
     private AtomicInteger counter;
-    public DHTGetMessage(int senderPort, int receiverPort, int key, int originalSenderPort, AtomicInteger counter) {
-        super(MessageType.ASK_GET, senderPort, receiverPort);
+
+    public DHTGetMessage(ServentInfo sender, ServentInfo receiver, int key, ServentInfo originalSender, AtomicInteger counter) {
+        super(MessageType.ASK_GET, sender, receiver);
         this.key = key;
-        this.originalSenderPort = originalSenderPort;
+        this.originalSender = originalSender;
         this.counter = counter;
     }
     public int getKey() {
         return key;
     }
-    public int getOriginalSenderPort() {
-        return originalSenderPort;
+
+    public ServentInfo getOriginalSender() {
+        return originalSender;
     }
 
     public AtomicInteger getCounter() {

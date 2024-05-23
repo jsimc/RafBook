@@ -1,7 +1,9 @@
 package servent.message;
 
+import app.ServentInfo;
+
 public class DHTGetFailMessage extends BasicMessage {
-    public DHTGetFailMessage(int senderPort, int receiverPort, int key) {
-        super(MessageType.FAIL_GET, senderPort, receiverPort, String.valueOf(key));
+    public DHTGetFailMessage(ServentInfo sender, ServentInfo receiver, int key) {
+        super(MessageType.FAIL_GET, sender, receiver, String.valueOf(key));
     }
 }

@@ -1,12 +1,14 @@
 package servent.message;
 
+import app.ServentInfo;
+
 public class DHTTellGetMessage extends BasicMessage {
 
     private final int key;
     private final String value;
 
-    public DHTTellGetMessage(int senderPort, int receiverPort, int key, String value) {
-        super(MessageType.TELL_GET, senderPort, receiverPort);
+    public DHTTellGetMessage(ServentInfo sender, ServentInfo receiver, int key, String value) {
+        super(MessageType.TELL_GET, sender, receiver);
         this.key = key;
         this.value = value;
     }

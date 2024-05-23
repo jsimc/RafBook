@@ -1,5 +1,6 @@
 package servent.message;
 
+import app.ServentInfo;
 import app.kademlia.FindNodeAnswer;
 
 public class TellNewNodeMessage extends BasicMessage {
@@ -8,7 +9,7 @@ public class TellNewNodeMessage extends BasicMessage {
     private final FindNodeAnswer findNodeAnswer;
 
     private boolean init = false;
-    public TellNewNodeMessage(int senderPort, int receiverPort, FindNodeAnswer findNodeAnswer) {
+    public TellNewNodeMessage(ServentInfo senderPort, ServentInfo receiverPort, FindNodeAnswer findNodeAnswer) {
         super(MessageType.TELL_NEW_NODE, senderPort, receiverPort);
         this.findNodeAnswer = findNodeAnswer;
     }

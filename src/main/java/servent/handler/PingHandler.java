@@ -22,8 +22,11 @@ public class PingHandler implements MessageHandler{
              * Notice that this is NOT on the same socket, though,
              * because we want this system to be completely asynchronous.
              */
+            // updateRoutingTable!
+//            AppConfig.routingTable.update();
+
             MessageUtil.sendMessage(
-                    new PongMessage(clientMessage.getReceiverPort(), clientMessage.getSenderPort()));
+                    new PongMessage(clientMessage.getReceiver(), clientMessage.getSender()));
 
         } else {
             AppConfig.timestampedErrorPrint("PING handler got: " + clientMessage);
