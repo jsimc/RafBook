@@ -11,10 +11,9 @@ public interface Bucket extends Serializable {
     boolean contains(int id);
     boolean contains(ServentInfo servent); // node
     void add(ServentInfo newServent);
-
     void remove(ServentInfo servent);
     void remove(int id);
     ServentInfo getNode(int id);
     List<Integer> getNodeIds();
-//    static void addToAnswer()
+    void pushToFront(ServentInfo serventInfo);
 }

@@ -40,4 +40,26 @@ public class TestClass {
 //        System.out.println(Integer.toBinaryString(lastPrefix));
         routingTable.findClosest(46);
     }
+
+    @Test
+    public void test3() {
+        List<Integer> lista = new ArrayList<>();
+//        lista.add(1234);
+//        System.out.println(lista.get(0));
+
+        String proba = "jelena";
+        System.out.println(Math.abs(proba.hashCode()));
+        System.out.println(valueHash(proba));
+//        System.out.println(Math.abs(proba.hashCode())%64);
+//        int hash = (proba.hashCode()%64) & 0xffffff;
+//        System.out.println(hash);
+    }
+
+    private int hash(int value) {
+        return Math.abs(61 * value) % (int) Math.pow(2, 6);
+    }
+
+    private int valueHash(String value) {
+        return hash(value.hashCode());
+    }
 }

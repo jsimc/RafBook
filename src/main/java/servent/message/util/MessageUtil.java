@@ -2,6 +2,7 @@ package servent.message.util;
 
 import app.AppConfig;
 import servent.message.Message;
+import servent.message.MessageType;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -24,7 +25,7 @@ public class MessageUtil {
             e.printStackTrace();
         }
 
-        if(MESSAGE_UTIL_PRINTING) {
+        if(MESSAGE_UTIL_PRINTING && !clientMessage.getMessageType().equals(MessageType.PONG) && !clientMessage.getMessageType().equals(MessageType.PING)) {
             AppConfig.timestampedStandardPrint("Got message " + clientMessage);
         }
         return clientMessage;

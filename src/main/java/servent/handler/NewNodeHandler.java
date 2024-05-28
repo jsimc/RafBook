@@ -26,9 +26,13 @@ public class NewNodeHandler implements MessageHandler {
             int add = AppConfig.routingTable.update(newNodeInfo);
             if(add == 0) {
                 AppConfig.timestampedStandardPrint("Novi u routingTable: " + newNodeId);
+
             } else if (add == -1){
                 AppConfig.timestampedStandardPrint("Collision: " + newNodeId + " already exists.");
                 return;
+            } else if (add == -2) {
+                // ako je taj bucket pun. pokusaj da pingujes lre
+                AppConfig.routingTable.softUpdate(newNodeInfo);
             }
 
             TellNewNodeMessage tellNewNodeMessage = new TellNewNodeMessage(AppConfig.myServentInfo, newNodeInfo, findNodeAnswer);

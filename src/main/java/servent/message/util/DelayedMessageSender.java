@@ -24,7 +24,7 @@ public class DelayedMessageSender implements Runnable {
             e1.printStackTrace();
         }
 
-        if (MessageUtil.MESSAGE_UTIL_PRINTING) {
+        if (MessageUtil.MESSAGE_UTIL_PRINTING && !messageToSend.getMessageType().equals(MessageType.PONG) && !messageToSend.getMessageType().equals(MessageType.PING)) {
             AppConfig.timestampedStandardPrint("Sending message " + messageToSend);
         }
 
@@ -38,11 +38,11 @@ public class DelayedMessageSender implements Runnable {
             sendSocket.close();
         } catch (IOException e) {
             //TODO ako je cvor neaktivan onda ce ovde da pukne samo moras da proveris da li je PING poruka.
-            if(messageToSend.getMessageType() == MessageType.PING) {
-                // ako je poruka PING i nije uspela da se posalje znaci da taj cvor ne radi.
-                // pretpostavicu da ja pingujem samo moje
-//                AppConfig.routingTable.delete();
-            }
+            // zapravo ovo bi trebalo uraditi koja god da je poruka u pitanju! Ako ne mozes da je posaljes obrisi ga iz routing table
+            // i mogao bi da azuriras (republish) svojih values.
+//            AppConfig.routingTable.delete(messageToSend.getReceiver());
+            AppConfig.isAlive.put(messageToSend.getReceiver(), false);
+            // TODO treba uraditi republishing svih values.
             AppConfig.timestampedErrorPrint("Couldn't send message: " + messageToSend.toString());
         }
     }

@@ -2,6 +2,7 @@ package app;
 
 import cli.CLIParser;
 import servent.SimpleServentListener;
+import servent.message.util.PingRunnable;
 
 import java.util.logging.SimpleFormatter;
 
@@ -41,7 +42,11 @@ public class ServentMain {
         Thread listenerThread = new Thread(simpleServentListener);
         listenerThread.start();
 
-        CLIParser cliParser = new CLIParser(simpleServentListener);
+        PingRunnable pingRunnable = new PingRunnable();
+        Thread pingThread = new Thread(pingRunnable);
+        pingThread.start();
+
+        CLIParser cliParser = new CLIParser(simpleServentListener, pingRunnable);
         Thread cliThread = new Thread(cliParser);
         cliThread.start();
 

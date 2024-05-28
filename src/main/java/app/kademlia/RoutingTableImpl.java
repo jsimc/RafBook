@@ -2,7 +2,8 @@ package app.kademlia;
 
 import app.AppConfig;
 import app.ServentInfo;
-import app.exceptions.FullBucketException;
+import servent.message.PingMessage;
+import servent.message.util.MessageUtil;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,13 +54,30 @@ public class RoutingTableImpl implements RoutingTable {
     public int update(ServentInfo servent){
         Bucket bucket = this.findBucket(servent.getHashId()); // nalazimo bucket u koji cemo da ga stavimo.
         if (bucket.contains(servent)) {
+            // pushToFront
+            bucket.pushToFront(servent);
             return -1;
         } else if (bucket.size() < AppConfig.BUCKET_SIZE) {
             bucket.add(servent);
             return 0;
         }
+
         AppConfig.timestampedErrorPrint("Full Bucket: " + servent.getHashId());
         return -2;
+    }
+
+    @Override
+    public void softUpdate(ServentInfo serventInfo) {
+        if(this.update(serventInfo) == -2) {
+            // TODO mozda umesto ovde da se poziva PING message da se samo stavi ovaj servent u cacheServent
+            //  pa kad bude PingRunnable pingovao sve i kad bude izbacio
+            // ako je bucket full onda treba da pingujemo za taj bucket najstarijeg. tj bucket.get(bucket.size() -1)
+            Bucket bucket = findBucket(serventInfo.getHashId());
+            int lreServentId = bucket.getNodeIds().get(bucket.size()-1); // ovo bismo trebali da radimo za svaki a ne samo za lre?
+            ServentInfo lreServent = bucket.getNode(lreServentId);
+            PingMessage pingMessage = new PingMessage(AppConfig.myServentInfo, lreServent);
+            MessageUtil.sendMessage(pingMessage);
+        }
     }
 
     @Override

@@ -22,7 +22,10 @@ public class PongHandler implements MessageHandler {
          * k tnx bye.
          */
         if (clientMessage.getMessageType() == MessageType.PONG) {
-            ; //whatevs
+            // kad dobijem pong znaci da je taj node odgovorio na moj PING
+            AppConfig.routingTable.update(clientMessage.getSender());
+            // znaci da je ziv i da mu postavljam isAlive na true
+            AppConfig.isAlive.put(clientMessage.getSender(), true);
         }  else {
             AppConfig.timestampedErrorPrint("PONG handler got: " + clientMessage);
         }

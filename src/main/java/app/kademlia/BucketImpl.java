@@ -50,6 +50,12 @@ public class BucketImpl implements Bucket {
     }
 
     @Override
+    public void pushToFront(ServentInfo serventInfo) { // on the front is Most Recently Used, on the back is Least RU
+        nodeIds.remove(Integer.valueOf(serventInfo.getHashId()));
+        nodeIds.add(0, serventInfo.getHashId());
+    }
+
+    @Override
     public void remove(ServentInfo servent) {
         this.remove(servent.getHashId());
     }

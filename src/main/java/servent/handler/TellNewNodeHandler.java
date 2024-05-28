@@ -43,14 +43,16 @@ public class TellNewNodeHandler implements MessageHandler {
                 }
             }
 
-            AppConfig.timestampedStandardPrint("NODE ANSWER from: " + tellNewNodeMessage.getSenderPort());
-            AppConfig.timestampedStandardPrint(String.valueOf(findNodeAnswer));
+//            AppConfig.timestampedStandardPrint("NODE ANSWER from: " + tellNewNodeMessage.getSenderPort());
+//            AppConfig.timestampedStandardPrint(String.valueOf(findNodeAnswer));
 
             // sve sto nam je prvi vratio ubacujemo kod sebe u routing table i saljemo i njima newNodeMessage
             findNodeAnswer.getNodes().forEach(serventInfo -> {
                 if (serventInfo.getHashId() == AppConfig.myServentInfo.getHashId()){
                     return;
                 }
+                // ako je sender jedan od kClosest (poslao je samog sebe)
+                // onda samo uradi update. ne moras opet da mu saljes.
                 if(serventInfo.getHashId() == tellNewNodeMessage.getSender().getHashId()) AppConfig.routingTable.update(serventInfo);
 
                 int isNew = AppConfig.routingTable.update(serventInfo);

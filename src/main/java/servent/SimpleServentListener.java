@@ -2,6 +2,7 @@ package servent;
 
 import app.AppConfig;
 import app.Cancellable;
+import app.Sleepable;
 import servent.handler.*;
 import servent.message.Message;
 import servent.message.util.MessageUtil;
@@ -13,7 +14,7 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SimpleServentListener implements Runnable, Cancellable {
+public class SimpleServentListener implements Runnable, Cancellable, Sleepable {
     private volatile boolean working = true;
 
     private final ExecutorService threadPool = Executors.newWorkStealingPool();
@@ -83,5 +84,14 @@ public class SimpleServentListener implements Runnable, Cancellable {
     @Override
     public void stop() {
         this.working = false;
+    }
+
+    @Override
+    public void sleep(int length) {
+        try{
+            Thread.sleep(length);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

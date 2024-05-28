@@ -21,8 +21,8 @@ public class DHTPutHandler implements MessageHandler {
     public void run() {
         if(clientMessage.getMessageType() == MessageType.PUT) {
             DHTPutMessage dhtPutMessage = (DHTPutMessage) clientMessage;
-            int key = dhtPutMessage.getKey();
             String value = dhtPutMessage.getValue();
+            int key = AppConfig.valueHash(value);
 
             if(AppConfig.routingTable.containsValue(key)) {
                 AppConfig.timestampedErrorPrint("Already have key: " + key);
@@ -32,11 +32,15 @@ public class DHTPutHandler implements MessageHandler {
             for(ServentInfo serventInfo : AppConfig.routingTable.findClosest(key).getNodes()) {
                 if(AppConfig.myServentInfo.getHashId() == serventInfo.getHashId()) {
                     AppConfig.routingTable.putValue(key, value);
+                    AppConfig.timestampedErrorPrint("Ubacila sebi: " + key);
                     continue;
                 }
-                if(serventInfo.getHashId() == dhtPutMessage.getSender().getHashId()) continue;
+                if(serventInfo.getHashId() == dhtPutMessage.getSender().getHashId()) {
+                    AppConfig.timestampedErrorPrint("Not going to send it to our sender: " + dhtPutMessage.getSender().getHashId());
+                    continue;
+                }
 
-                DHTPutMessage dhtPutMessage1 = new DHTPutMessage(AppConfig.myServentInfo, serventInfo, key, value);
+                DHTPutMessage dhtPutMessage1 = new DHTPutMessage(AppConfig.myServentInfo, serventInfo, value);
                 MessageUtil.sendMessage(dhtPutMessage1);
             }
         }  else {

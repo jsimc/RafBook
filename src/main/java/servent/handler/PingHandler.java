@@ -6,6 +6,8 @@ import servent.message.MessageType;
 import servent.message.PongMessage;
 import servent.message.util.MessageUtil;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class PingHandler implements MessageHandler{
     private final Message clientMessage;
 
@@ -23,8 +25,11 @@ public class PingHandler implements MessageHandler{
              * because we want this system to be completely asynchronous.
              */
             // updateRoutingTable!
-//            AppConfig.routingTable.update();
+            AppConfig.routingTable.update(clientMessage.getSender());
+            // stavicu kod sebe tog sendera da vidim da je ziv
+            AppConfig.isAlive.put(clientMessage.getSender(), true);
 
+            // saljem pong poruku odgovora
             MessageUtil.sendMessage(
                     new PongMessage(clientMessage.getReceiver(), clientMessage.getSender()));
 

@@ -11,6 +11,7 @@ public interface RoutingTable extends Serializable {
     int getNodePrefix(int id);
     Bucket findBucket(int id);
     int update(ServentInfo servent); // FullBucketException
+    void softUpdate(ServentInfo serventInfo);
     void delete(ServentInfo servent);
     FindNodeAnswer findClosest(int destinationId);
     boolean contains(int id);
@@ -21,4 +22,5 @@ public interface RoutingTable extends Serializable {
     String getValue(int key);
     void removeValue(int key);
     boolean containsValue(int key);
+
 }
