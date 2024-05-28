@@ -82,6 +82,7 @@ public class RoutingTableImpl implements RoutingTable {
 
     @Override
     public void delete(ServentInfo servent) {
+        // TODO dodaj proveru da nakon delete-a ubaci iz cache liste node koji moze.
         Bucket bucket = this.findBucket(servent.getHashId());
         bucket.remove(servent);
     }

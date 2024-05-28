@@ -16,7 +16,7 @@ public class PingRunnable implements Runnable, Cancellable, Sleepable {
     public void run() {
         while(this.working) {
             try {
-                Thread.sleep(10_000);
+                Thread.sleep(20_000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

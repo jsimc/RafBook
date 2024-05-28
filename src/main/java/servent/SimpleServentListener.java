@@ -71,6 +71,12 @@ public class SimpleServentListener implements Runnable, Cancellable, Sleepable {
                     case ASK_GET:
                         messageHandler = new DHTGetHandler(clientMessage);
                         break;
+                    case CHECK_NODE:
+                        messageHandler = new CheckNodeHandler(clientMessage);
+                        break;
+                    case TELL_CHECK_NODE:
+                        messageHandler = new TellCheckNodeHandler(clientMessage);
+                        break;
                 }
                 threadPool.submit(messageHandler);
             } catch (SocketTimeoutException timeoutException) {
