@@ -27,8 +27,8 @@ public class AppConfig {
     public static int SERVENT_COUNT;
 
     ///////////////////////////////////////////////////
-    public static int ID_SIZE; // number of nodes in the system = Math.pow(2, ID_SIZE);
-    public static int BUCKET_SIZE; // size of each bucket (ovo izgleda JESTE broj K!!!)
+    public static int ID_SIZE = 6; // number of nodes in the system = Math.pow(2, ID_SIZE);
+    public static int BUCKET_SIZE = 4; // size of each bucket (ovo izgleda JESTE broj K!!!)
     public static int PING_SCHEDULE_TIME_VALUE; // in milliseconds
 
     public static Map<ServentInfo, Boolean> isAlive = new ConcurrentHashMap<>(); // key: servent, value: true if alive.

@@ -35,7 +35,8 @@ public class RepublishValue implements Runnable, Cancellable, Sleepable {
                     continue;
                 }
 
-                DHTPutMessage dhtPutMessage = new DHTPutMessage(AppConfig.myServentInfo, serventInfo, value);
+                DHTPutMessage dhtPutMessage = new DHTPutMessage(AppConfig.myServentInfo, serventInfo, AppConfig.myServentInfo, value);
+                dhtPutMessage.addToClosestNodes(serventInfo);
                 MessageUtil.sendMessage(dhtPutMessage);
             }
         }
