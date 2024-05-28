@@ -23,6 +23,7 @@ public class PingRunnable implements Runnable, Cancellable, Sleepable {
 
             AppConfig.routingTable.getBuckets().forEach(bucket -> {
                 for (Integer nodeId : bucket.getNodeIds()) {
+                    if(AppConfig.myServentInfo.getHashId() == nodeId) return;
                     ServentInfo node = bucket.getNode(nodeId);
                     MessageUtil.sendMessage(
                             new PingMessage(AppConfig.myServentInfo, node));
