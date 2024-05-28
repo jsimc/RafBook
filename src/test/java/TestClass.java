@@ -1,13 +1,12 @@
 import app.AppConfig;
 import app.ServentInfo;
+import app.kademlia.DistanceComparator;
 import app.kademlia.RoutingTable;
 import app.kademlia.RoutingTableImpl;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TestClass {
     @Test
@@ -39,6 +38,22 @@ public class TestClass {
 //        int lastPrefix = routingTable.getNodePrefix(6);
 //        System.out.println(Integer.toBinaryString(lastPrefix));
         routingTable.findClosest(46);
+    }
+
+    @Test
+    public void testDistanceComparator() {
+        int key = 5;
+        DistanceComparator comparator = new DistanceComparator(key);
+        Set<ServentInfo> lista = new LinkedHashSet<>();
+        lista.add(new ServentInfo(6, "localhost", 1200));
+        lista.add(new ServentInfo(7, "localhost", 1300));
+        lista.add(new ServentInfo(8, "localhost", 1500));
+        lista.add(new ServentInfo(9, "localhost", 1670));
+        System.out.println(lista);
+
+        lista = lista.stream().sorted(comparator).collect(Collectors.toCollection(LinkedHashSet::new));
+
+        System.out.println(lista);
     }
 
     @Test
