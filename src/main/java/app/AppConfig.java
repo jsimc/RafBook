@@ -17,6 +17,8 @@ public class AppConfig {
 
     // or just: "workspace" ???
     public static final String WORKSPACE = "C:\\Users\\Jelena\\Documents\\faks\\8. semestar\\KiDs\\projekat_kids\\kids_pr_jelena_simic_rn2720\\workspace";
+    public static int SOFT_RESET_MS = 5000;
+    public static int HARD_RESET_MS = 20000;
 
     public static ServentInfo myServentInfo;
 
@@ -76,6 +78,20 @@ public class AppConfig {
             PING_SCHEDULE_TIME_VALUE = Integer.parseInt(properties.getProperty("ping_schedule_time"));
         } catch (NumberFormatException e) {
             timestampedErrorPrint("Problem reading ping_schedule_time. Exiting...");
+            System.exit(0);
+        }
+
+        try {
+            HARD_RESET_MS = Integer.parseInt(properties.getProperty("hard_reset_ms"));
+        } catch (NumberFormatException e) {
+            timestampedErrorPrint("Problem reading hard_reset_ms. Exiting...");
+            System.exit(0);
+        }
+
+        try {
+            SOFT_RESET_MS = Integer.parseInt(properties.getProperty("soft_reset_ms"));
+        } catch (NumberFormatException e) {
+            timestampedErrorPrint("Problem reading soft_reset_ms. Exiting...");
             System.exit(0);
         }
 

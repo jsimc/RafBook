@@ -23,7 +23,7 @@ public class CheckNodeHandler implements MessageHandler{
             AppConfig.isAlive.put(nodeToCheck, false);
             Thread waitForPong = new Thread(() -> {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(AppConfig.HARD_RESET_MS);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

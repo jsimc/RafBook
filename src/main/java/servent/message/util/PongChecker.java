@@ -16,7 +16,7 @@ public class PongChecker implements Runnable{
     @Override
     public void run() {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(AppConfig.SOFT_RESET_MS);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
