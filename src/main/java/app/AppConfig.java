@@ -2,6 +2,7 @@ package app;
 
 import app.kademlia.RoutingTable;
 import app.kademlia.RoutingTableImpl;
+import app.mutex.SuzukiKasami;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +37,8 @@ public class AppConfig {
     public static Map<ServentInfo, Boolean> isAlive = new ConcurrentHashMap<>(); // key: servent, value: true if alive.
 
     public static RoutingTable routingTable;
+
+    public static SuzukiKasami mutex;
 
     public static void readConfig(String configName, int serventId) {
         Properties properties = new Properties();
@@ -110,6 +113,8 @@ public class AppConfig {
         myServentInfo = new ServentInfo(serventId,"localhost", serventPort);
         routingTable = new RoutingTableImpl();
         routingTable.update(myServentInfo);
+
+        mutex = new SuzukiKasami();
     }
 
     public static void timestampedStandardPrint(String message) {

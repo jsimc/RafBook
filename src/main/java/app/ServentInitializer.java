@@ -20,6 +20,7 @@ public class ServentInitializer implements Runnable {
             System.exit(0);
         } else if(someServentPort == -1) { //bootstrap gave us -1 -> we are first
             AppConfig.timestampedStandardPrint("First node in system.");
+            AppConfig.mutex.setFirstHaveToken(true);
         } else { //bootstrap gave us something else - let that node tell our successor that we are here
             // new node in the system message
             AppConfig.timestampedStandardPrint("New node in system.");

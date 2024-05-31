@@ -11,5 +11,6 @@ public enum MessageType {
     // tell check node je za odgovor inicijalnom nodu -> taj nod treba da ima neki counter da vidi koliko nodeova mu je javilo
     // da je ovaj mrtav, i ako nadvlada vecina oznacava ga mrtvim i izbacuje iz svoje routingTabele.
     // TODO ubbaci caching za nove node-ove!!!
-    CHECK_NODE, TELL_CHECK_NODE
+    CHECK_NODE, TELL_CHECK_NODE,
+    REQ_TOKEN, REPLY_TOKEN
 }
