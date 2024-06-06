@@ -1,6 +1,7 @@
 package servent.handler;
 
 import app.AppConfig;
+import app.MyFile;
 import servent.message.DHTTellGetMessage;
 import servent.message.Message;
 import servent.message.MessageType;
@@ -19,7 +20,7 @@ public class DHTTellGetHandler implements MessageHandler {
             // znaci da smo nasli vrednost sa tim kljucem.
             DHTTellGetMessage dhtTellGetMessage = (DHTTellGetMessage) clientMessage;
             int key = dhtTellGetMessage.getKey();
-            String value = dhtTellGetMessage.getValue();
+            MyFile value = dhtTellGetMessage.getValue();
 
             if(AppConfig.routingTable.containsValue(key)) return; // dobili smo je od nekog drugog vec.
             // mogli bismo iz predostroznosti da je sacuvamo kod nas

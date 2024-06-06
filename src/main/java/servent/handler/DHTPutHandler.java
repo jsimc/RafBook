@@ -1,11 +1,13 @@
 package servent.handler;
 
 import app.AppConfig;
+import app.MyFile;
 import app.ServentInfo;
 import servent.message.DHTPutMessage;
 import servent.message.Message;
 import servent.message.MessageType;
 import servent.message.util.MessageUtil;
+import servent.message.util.RepublishValue;
 
 public class DHTPutHandler implements MessageHandler {
 
@@ -18,8 +20,8 @@ public class DHTPutHandler implements MessageHandler {
     public void run() {
         if(clientMessage.getMessageType() == MessageType.PUT) {
             DHTPutMessage dhtPutMessage = (DHTPutMessage) clientMessage;
-            String value = dhtPutMessage.getValue();
-            int key = AppConfig.valueHash(value);
+            MyFile value = dhtPutMessage.getValue();
+            int key = value.getKey();
 
             if(AppConfig.routingTable.containsValue(key)) {
                 AppConfig.timestampedErrorPrint("Already have key: " + key);
@@ -27,6 +29,11 @@ public class DHTPutHandler implements MessageHandler {
             }
 
             AppConfig.routingTable.putValue(key, value);
+
+            // TODO uncomment
+//            RepublishValue republishValue = new RepublishValue(value);
+//            Thread thread = new Thread(republishValue);
+//            thread.start();
         }  else {
             AppConfig.timestampedErrorPrint("PUT Handler got something else: " + clientMessage.getMessageType());
         }

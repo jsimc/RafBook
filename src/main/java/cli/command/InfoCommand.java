@@ -1,6 +1,7 @@
 package cli.command;
 
 import app.AppConfig;
+import app.MyFile;
 import app.ServentInfo;
 import app.kademlia.Bucket;
 
@@ -23,7 +24,7 @@ public class InfoCommand implements CLICommand{
             }
         }
 
-        for(Map.Entry<Integer, String> entry : AppConfig.routingTable.getValueMap().entrySet()) {
+        for(Map.Entry<Integer, MyFile> entry : AppConfig.routingTable.getValueMap().entrySet()) {
             AppConfig.timestampedStandardPrint("key: " + entry.getKey() + ", value: " + entry.getValue());
         }
 

@@ -1,6 +1,7 @@
 package app.kademlia;
 
 import app.AppConfig;
+import app.MyFile;
 import app.ServentInfo;
 import servent.message.PingMessage;
 import servent.message.util.MessageUtil;
@@ -8,15 +9,18 @@ import servent.message.util.MessageUtil;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public class RoutingTableImpl implements RoutingTable {
 
     private List<Bucket> buckets;
-    private Map<Integer, String> valueMap;
+    private Map<Integer, MyFile> valueMap;
+    private List<MyFile> myFiles;
 
     public RoutingTableImpl() {
         this.buckets = new CopyOnWriteArrayList<>();
         this.valueMap = new ConcurrentHashMap<>();
+        this.myFiles = new CopyOnWriteArrayList<>();
         for (int i = 0; i <= AppConfig.ID_SIZE; i++) { // 0, 1, 2, 3, 4, 5, 6
             buckets.add(new BucketImpl(i));
         }
@@ -141,17 +145,17 @@ public class RoutingTableImpl implements RoutingTable {
     }
 
     @Override
-    public Map<Integer, String> getValueMap() {
+    public Map<Integer, MyFile> getValueMap() {
         return this.valueMap;
     }
 
     @Override
-    public void putValue(int key, String value) {
+    public void putValue(int key, MyFile value) {
         this.valueMap.putIfAbsent(key, value);
     }
 
     @Override
-    public String getValue(int key) {
+    public MyFile getValue(int key) {
         return this.valueMap.get(key);
     }
 
@@ -170,5 +174,20 @@ public class RoutingTableImpl implements RoutingTable {
             ServentInfo node = bucket.getNode(id);
             answerNodes.put(node, node.getHashId()^destinationId);
         }
+    }
+
+    @Override
+    public void addToMyFiles(MyFile value) {
+        this.myFiles.add(value);
+    }
+
+    @Override
+    public List<MyFile> getAllMyFiles() {
+        return this.myFiles;
+    }
+
+    @Override
+    public List<MyFile> getPublicMyFiles() {
+        return this.myFiles.stream().filter(MyFile::isPublic).collect(Collectors.toList());
     }
 }

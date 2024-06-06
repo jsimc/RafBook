@@ -95,6 +95,37 @@ public class TestClass {
             System.out.println(element);
         }
     }
+    @Test
+    public void isPublicTest() {
+        String[] splitArgs = {"nesto", "public"};
+        Boolean isPublic;
+        isPublic = splitArgs[1].equals("public") ? Boolean.TRUE : splitArgs[1].equals("private") ? Boolean.FALSE : null;
+        if(isPublic == null) System.out.println("problem");
+        else System.out.println(isPublic);
+    }
+
+    @Test
+    public void stringFileTest() {
+//        String input = "tesst\\test\\test\\test2";
+        String input = "tesst";
+        System.out.println(input);
+
+        // Find the index of the last occurrence of the backslash
+        int lastIndex = input.lastIndexOf('\\');
+
+        // Extract the substring from the start up to (but not including) the last backslash
+        if (lastIndex != -1) {
+            String result = input.substring(0, lastIndex);
+            String fileName = input.substring(lastIndex+1);
+            System.out.println(result);  // Output: tesst\test\test
+            System.out.println(fileName);
+        } else {
+            String fileName = input.substring(lastIndex+1);
+            System.out.println(fileName);
+//            System.out.println(input.substring(0, lastIndex));
+//            System.out.println("No backslash found in the input string.");
+        }
+    }
 
     private int hash(int value) {
         return Math.abs(61 * value) % (int) Math.pow(2, 6);

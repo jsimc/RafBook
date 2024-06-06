@@ -1,5 +1,6 @@
 package app.kademlia;
 
+import app.MyFile;
 import app.ServentInfo;
 import app.exceptions.FullBucketException;
 
@@ -17,10 +18,12 @@ public interface RoutingTable extends Serializable {
     boolean contains(int id);
     List<Bucket> getBuckets();
     int getDistance(int id);
-    Map<Integer, String> getValueMap();
-    void putValue(int key, String value);
-    String getValue(int key);
+    Map<Integer, MyFile> getValueMap();
+    void addToMyFiles(MyFile value);
+    List<MyFile> getAllMyFiles();
+    List<MyFile> getPublicMyFiles();
+    void putValue(int key, MyFile value);
+    MyFile getValue(int key);
     void removeValue(int key);
     boolean containsValue(int key);
-
 }

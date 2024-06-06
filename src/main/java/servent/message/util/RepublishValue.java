@@ -1,22 +1,19 @@
 package servent.message.util;
 
-import app.AppConfig;
-import app.Cancellable;
-import app.ServentInfo;
-import app.Sleepable;
+import app.*;
 import app.kademlia.FindNodeAnswer;
 import servent.message.DHTPutMessage;
 
 public class RepublishValue implements Runnable, Cancellable, Sleepable {
 
     private final int key;
-    private final String value;
+    private final MyFile value;
 
     // mozda mi nece ovo trebati.
     private volatile boolean working = true;
 
-    public RepublishValue(String value) {
-        this.key = AppConfig.valueHash(value);
+    public RepublishValue(MyFile value) {
+        this.key = value.getKey();
         this.value = value;
     }
 

@@ -1,13 +1,14 @@
 package servent.message;
 
+import app.MyFile;
 import app.ServentInfo;
 
 public class DHTTellGetMessage extends BasicMessage {
 
     private final int key;
-    private final String value;
+    private final MyFile value;
 
-    public DHTTellGetMessage(ServentInfo sender, ServentInfo receiver, int key, String value) {
+    public DHTTellGetMessage(ServentInfo sender, ServentInfo receiver, int key, MyFile value) {
         super(MessageType.TELL_GET, sender, receiver);
         this.key = key;
         this.value = value;
@@ -17,7 +18,7 @@ public class DHTTellGetMessage extends BasicMessage {
         return key;
     }
 
-    public String getValue() {
+    public MyFile getValue() {
         return value;
     }
 }
