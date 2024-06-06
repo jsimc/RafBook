@@ -14,9 +14,6 @@ public class DHTPutHandler implements MessageHandler {
     public DHTPutHandler(Message clientMessage) {
         this.clientMessage = clientMessage;
     }
-// TODO
-//  treba ponoviti replikaciju kad god udje neki novi cvor.
-// TODO na kraju uradi scheduled ping !
     @Override
     public void run() {
         if(clientMessage.getMessageType() == MessageType.PUT) {
@@ -29,20 +26,7 @@ public class DHTPutHandler implements MessageHandler {
                 return;
             }
 
-            for(ServentInfo serventInfo : AppConfig.routingTable.findClosest(key).getNodes()) {
-                if(AppConfig.myServentInfo.getHashId() == serventInfo.getHashId()) {
-                    AppConfig.routingTable.putValue(key, value);
-                    AppConfig.timestampedErrorPrint("Ubacila sebi: " + key);
-                    continue;
-                }
-                if(serventInfo.getHashId() == dhtPutMessage.getSender().getHashId()) {
-                    AppConfig.timestampedErrorPrint("Not going to send it to our sender: " + dhtPutMessage.getSender().getHashId());
-                    continue;
-                }
-
-                DHTPutMessage dhtPutMessage1 = new DHTPutMessage(AppConfig.myServentInfo, serventInfo, value);
-                MessageUtil.sendMessage(dhtPutMessage1);
-            }
+            AppConfig.routingTable.putValue(key, value);
         }  else {
             AppConfig.timestampedErrorPrint("PUT Handler got something else: " + clientMessage.getMessageType());
         }

@@ -70,6 +70,32 @@ public class TestClass {
 //        System.out.println(hash);
     }
 
+    @Test
+    public void hashSetTest() {
+        // Initial Set
+        Set<String> set = new HashSet<>();
+        set.add("Apple");
+        set.add("Banana");
+        set.add("Cherry");
+
+        // Initial List
+        List<String> list = new ArrayList<>();
+        list.add("Banana");
+        list.add("Date");
+        list.add("Elderberry");
+
+        // New Set to hold merged elements
+        Set<String> mergedSet = new HashSet<>(set);
+
+        // Add all elements from the list to the new set
+        mergedSet.addAll(list);
+
+        // Print the merged set
+        for (String element : mergedSet) {
+            System.out.println(element);
+        }
+    }
+
     private int hash(int value) {
         return Math.abs(61 * value) % (int) Math.pow(2, 6);
     }

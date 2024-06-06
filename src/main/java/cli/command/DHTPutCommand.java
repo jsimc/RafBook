@@ -4,7 +4,6 @@ import app.AppConfig;
 import app.ServentInfo;
 import app.kademlia.FindNodeAnswer;
 import servent.message.DHTPutMessage;
-import servent.message.MessageType;
 import servent.message.util.MessageUtil;
 import servent.message.util.RepublishValue;
 
@@ -45,8 +44,7 @@ public class DHTPutCommand implements CLICommand {
                 FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(key);
 
                 for(ServentInfo serventInfo : findNodeAnswer.getNodes()) {
-                    // proveravam ako sam ja u toj kClosest ubacujem sebi:
-                    if(AppConfig.myServentInfo.getHashId() == serventInfo.getHashId()) {
+                    if(serventInfo.equals(AppConfig.myServentInfo)) {
                         AppConfig.routingTable.putValue(key, value);
                         continue;
                     }
