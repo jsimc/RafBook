@@ -10,11 +10,15 @@ import servent.message.util.PingRunnable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CLIParser implements Runnable, Cancellable, Sleepable {
     private volatile boolean working = true;
 
     private final List<CLICommand> commandList;
+
+    private final ExecutorService republishThreadPool = Executors.newCachedThreadPool();
 
     public CLIParser(SimpleServentListener simpleServentListener, PingRunnable pingRunnable) {
         this.commandList = new ArrayList<>();
@@ -23,11 +27,11 @@ public class CLIParser implements Runnable, Cancellable, Sleepable {
         commandList.add(new PauseCommand());
         commandList.add(new PingCommand());
         commandList.add(new DHTGetCommand());
-        commandList.add(new DHTPutCommand());
+        commandList.add(new DHTPutCommand(republishThreadPool));
         commandList.add(new AddFriendCommand());
         commandList.add(new ViewFilesCommand());
         commandList.add(new SleepCommand(this, simpleServentListener, pingRunnable));
-        commandList.add(new StopCommand(this, simpleServentListener, pingRunnable));
+        commandList.add(new StopCommand(this, simpleServentListener, pingRunnable, republishThreadPool));
     }
 
     @Override

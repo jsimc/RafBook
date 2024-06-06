@@ -6,16 +6,23 @@ import app.ServentInfo;
 import app.kademlia.FindNodeAnswer;
 import servent.message.DHTPutMessage;
 import servent.message.util.MessageUtil;
+import servent.message.util.RepublishValue;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
 
 public class DHTPutCommand implements CLICommand {
+
+    private final ExecutorService republishThreadPool;
+    public DHTPutCommand(ExecutorService republishThreadPool) {
+        this.republishThreadPool = republishThreadPool;
+    }
+
     @Override
     public String commandName() {
         return "put";
     }
-
 
     // "put" trazi se k closest to the key (just like the node) and then every one of those k closest gets a value.
     @Override
@@ -65,11 +72,9 @@ public class DHTPutCommand implements CLICommand {
                     MessageUtil.sendMessage(dhtPutMessage);
                 }
 
-                // Da li threadpool pa .submit() ??
                 // TODO uncomment
-//                RepublishValue republishValue = new RepublishValue(value);
-//                Thread thread = new Thread(republishValue);
-//                thread.start();
+//                RepublishValue republishValue = new RepublishValue(myFile);
+//                republishThreadPool.submit(republishValue);
             } catch (NumberFormatException e) {
                 AppConfig.timestampedErrorPrint("Invalid key and value pair. Key should be integer between 0 and " + Math.pow(2, AppConfig.ID_SIZE)
                         + ". Value should be string indicating to file in directory: " + AppConfig.WORKSPACE);

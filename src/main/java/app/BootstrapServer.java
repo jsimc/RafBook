@@ -27,6 +27,9 @@ public class BootstrapServer {
                     working = false;
                     break;
                 }
+                if(line.equals("info")) {
+                    activeServents.forEach(System.out::println);
+                }
             }
             sc.close();
         }
