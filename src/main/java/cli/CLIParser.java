@@ -30,6 +30,7 @@ public class CLIParser implements Runnable, Cancellable, Sleepable {
         commandList.add(new DHTPutCommand(republishThreadPool));
         commandList.add(new AddFriendCommand());
         commandList.add(new ViewFilesCommand());
+        commandList.add(new RemoveFileCommand());
         commandList.add(new SleepCommand(this, simpleServentListener, pingRunnable));
         commandList.add(new StopCommand(this, simpleServentListener, pingRunnable, republishThreadPool));
     }

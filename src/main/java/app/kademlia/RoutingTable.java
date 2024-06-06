@@ -24,6 +24,6 @@ public interface RoutingTable extends Serializable {
     List<MyFile> getPublicMyFiles();
     void putValue(int key, MyFile value);
     MyFile getValue(int key);
-    void removeValue(int key);
+    MyFile removeValue(int key);
     boolean containsValue(int key);
 }

@@ -160,8 +160,8 @@ public class RoutingTableImpl implements RoutingTable {
     }
 
     @Override
-    public void removeValue(int key) {
-        this.valueMap.remove(key);
+    public MyFile removeValue(int key) {
+        return this.valueMap.remove(key);
     }
 
     @Override

@@ -95,6 +95,9 @@ public class SimpleServentListener implements Runnable, Cancellable, Sleepable {
                     case TELL_VIEW_FILES:
                         messageHandler = new TellViewFilesHandler(clientMessage);
                         break;
+                    case REMOVE_FILE:
+                        messageHandler = new RemoveFileHandler(clientMessage);
+                        break;
                 }
                 threadPool.submit(messageHandler);
             } catch (SocketTimeoutException timeoutException) {
