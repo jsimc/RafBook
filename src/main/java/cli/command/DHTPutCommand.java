@@ -41,9 +41,7 @@ public class DHTPutCommand implements CLICommand {
                     AppConfig.timestampedStandardPrint("File can be either \"public\" or \"private\". You entered: " + splitArgs[1]);
                     return;
                 }
-//                if (key < 0 || key >= Math.pow(2, AppConfig.ID_SIZE)) {
-//                    throw new NumberFormatException();
-//                }
+
                 File file = new File(String.valueOf(Path.of(AppConfig.WORKSPACE, value)));
                 if(!file.exists() || !file.isFile()) {
                     AppConfig.timestampedErrorPrint("File: " + file.getName() + " does not exist in directory: " + AppConfig.WORKSPACE);

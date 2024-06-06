@@ -23,8 +23,8 @@ public class TellViewFilesHandler implements MessageHandler {
         if(clientMessage.getMessageType() == MessageType.TELL_VIEW_FILES) {
             List<MyFile> fileList = ((TellViewFilesMessage) clientMessage).getMyFileList();
             if(fileList != null){
-                AppConfig.timestampedStandardPrint("Files from node: " + clientMessage.getSender());
-                fileList.forEach(file -> AppConfig.timestampedErrorPrint(file.toString()));
+                AppConfig.timestampedStandardPrint("Files from node " + clientMessage.getSender());
+                fileList.forEach(file -> AppConfig.timestampedStandardPrint(file.toString()));
             }
         } else {
             AppConfig.timestampedErrorPrint("TELL_VIEW_FILES Handler got something else: " + clientMessage.getMessageType());

@@ -123,7 +123,7 @@ public class RoutingTableImpl implements RoutingTable {
                 .map(Map.Entry::getKey)
                 .toList();
 
-        sorted.forEach(System.out::println);
+//        sorted.forEach(System.out::println);
 
         return new FindNodeAnswer(destinationId, sorted);
     }

@@ -32,6 +32,7 @@ public class AddFriendHandler implements MessageHandler{
             Set<ServentInfo> serventInfoSet = ((AddFriendMessage) clientMessage).getServentInfos();
             FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(friendHashId);
             if(AppConfig.isSame(serventInfoSet, findNodeAnswer.getNodes())) {
+                if(serventInfoSet.stream().anyMatch(serventInfo -> serventInfo.getHashId() == friendHashId)) return;
                 TellFriendMessage tellFriendMessage = new TellFriendMessage(AppConfig.myServentInfo, originalSender, null);
                 MessageUtil.sendMessage(tellFriendMessage);
                 return;

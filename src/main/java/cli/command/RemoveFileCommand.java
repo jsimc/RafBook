@@ -21,11 +21,6 @@ public class RemoveFileCommand implements CLICommand{
             String filepath = splitArgs[0];
             int key = AppConfig.valueHash(filepath);
 
-            // ne bi nikad trebalo da ovo bude problem, ali neka ga.
-//            if (key < 0 || key >= Math.pow(2, AppConfig.ID_SIZE)) {
-//                throw new NumberFormatException();
-//            }
-
             if(AppConfig.routingTable.removeValue(key) != null) AppConfig.timestampedStandardPrint("Removing file: " + filepath);
             FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(key);
             for(ServentInfo si : findNodeAnswer.getNodes()) {
