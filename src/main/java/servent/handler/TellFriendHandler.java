@@ -15,9 +15,8 @@ public class TellFriendHandler implements MessageHandler{
     public void run() {
         if(clientMessage.getMessageType() == MessageType.TELL_ADD_FRIEND) {
             TellFriendMessage tellFriendMessage = (TellFriendMessage) clientMessage;
-            if(tellFriendMessage.getFriendInfo() != null) {
+            if(tellFriendMessage.getFriendInfo() != null)
                 AppConfig.myServentInfo.addFriend(tellFriendMessage.getFriendInfo());
-            }
         } else {
             AppConfig.timestampedErrorPrint("TELL_ADD_FRIEND Handler got something else: " + clientMessage.getMessageType());
         }

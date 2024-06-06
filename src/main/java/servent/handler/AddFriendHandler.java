@@ -40,7 +40,7 @@ public class AddFriendHandler implements MessageHandler{
             newSet.addAll(findNodeAnswer.getNodes());
             findNodeAnswer.getNodes().forEach(serventInfo -> {
                 if(serventInfo.equals(originalSender) || serventInfo.equals(AppConfig.myServentInfo) || serventInfoSet.contains(serventInfo)) return; // preskoci sebe i original sendera.
-                AddFriendMessage addFriendMessage = new AddFriendMessage(AppConfig.myServentInfo, serventInfo, AppConfig.myServentInfo, friendHashId, newSet);
+                AddFriendMessage addFriendMessage = new AddFriendMessage(AppConfig.myServentInfo, serventInfo, originalSender, friendHashId, newSet);
                 MessageUtil.sendMessage(addFriendMessage);
             });
         } else {
