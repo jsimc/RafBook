@@ -86,6 +86,9 @@ public class SimpleServentListener implements Runnable, Cancellable, Sleepable {
                     case ADD_FRIEND:
                         messageHandler = new AddFriendHandler(clientMessage);
                         break;
+                    case TELL_ADD_FRIEND:
+                        messageHandler = new TellFriendHandler(clientMessage);
+                        break;
                 }
                 threadPool.submit(messageHandler);
             } catch (SocketTimeoutException timeoutException) {

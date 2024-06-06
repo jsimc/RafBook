@@ -21,9 +21,6 @@ public class AddFriendCommand implements CLICommand{
             try {
                 int friendListenerPort = Integer.parseInt(args.split(" ")[0]);
                 int friendHashId = AppConfig.hash(friendListenerPort); // hashId
-
-                AppConfig.myServentInfo.addFriend(new ServentInfo(-1, "localhost", friendListenerPort));
-
                 // sada po tome treba da trazimo standardno
                 FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(friendHashId);
                 for (ServentInfo si : findNodeAnswer.getNodes()) {
