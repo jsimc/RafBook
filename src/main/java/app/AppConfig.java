@@ -9,9 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AppConfig {
@@ -137,5 +135,13 @@ public class AppConfig {
 
     public static int valueHash(String value) {
         return hash(value.hashCode());
+    }
+    public static boolean isSame(Set<ServentInfo> serventInfoSet, List<ServentInfo> newNodesList) {
+        for(ServentInfo serventInfo : newNodesList) {
+            if(!serventInfoSet.contains(serventInfo)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

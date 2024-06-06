@@ -2,7 +2,8 @@ package app;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ServentInfo implements Serializable {
     @Serial
@@ -12,11 +13,14 @@ public class ServentInfo implements Serializable {
     private final String ipAddress;
     private final int listenerPort;
 
+    private Set<ServentInfo> friends;
+
     public ServentInfo(int id, String ipAddress, int listenerPort) {
         this.ipAddress = ipAddress;
         this.listenerPort = listenerPort;
         this.id = id;
         this.hashId = AppConfig.hash(listenerPort);
+        this.friends = Collections.newSetFromMap(new ConcurrentHashMap<>());
     }
 
     public String getIpAddress() {
@@ -33,6 +37,14 @@ public class ServentInfo implements Serializable {
 
     public int getHashId() {
         return hashId;
+    }
+
+    public Set<ServentInfo> getFriends() {
+        return friends;
+    }
+
+    public void addFriend(ServentInfo serventInfo) {
+        friends.add(serventInfo);
     }
 
     @Override

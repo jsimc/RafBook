@@ -1,6 +1,7 @@
 package cli.command;
 
 import app.AppConfig;
+import app.ServentInfo;
 import app.kademlia.Bucket;
 
 import java.util.Map;
@@ -24,6 +25,11 @@ public class InfoCommand implements CLICommand{
 
         for(Map.Entry<Integer, String> entry : AppConfig.routingTable.getValueMap().entrySet()) {
             AppConfig.timestampedStandardPrint("key: " + entry.getKey() + ", value: " + entry.getValue());
+        }
+
+        AppConfig.timestampedStandardPrint("friends: ");
+        for(ServentInfo si : AppConfig.myServentInfo.getFriends()) {
+            AppConfig.timestampedStandardPrint(String.valueOf(si));
         }
     }
 }

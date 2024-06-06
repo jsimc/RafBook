@@ -12,5 +12,5 @@ public enum MessageType {
     // da je ovaj mrtav, i ako nadvlada vecina oznacava ga mrtvim i izbacuje iz svoje routingTabele.
     // TODO ubbaci caching za nove node-ove!!!
     CHECK_NODE, TELL_CHECK_NODE,
-    REQ_TOKEN, REPLY_TOKEN
+    REQ_TOKEN, ADD_FRIEND, REPLY_TOKEN
 }
