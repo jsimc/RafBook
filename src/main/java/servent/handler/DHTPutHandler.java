@@ -2,12 +2,9 @@ package servent.handler;
 
 import app.AppConfig;
 import app.MyFile;
-import app.ServentInfo;
 import servent.message.DHTPutMessage;
 import servent.message.Message;
 import servent.message.MessageType;
-import servent.message.util.MessageUtil;
-import servent.message.util.RepublishValue;
 
 public class DHTPutHandler implements MessageHandler {
 
@@ -30,7 +27,7 @@ public class DHTPutHandler implements MessageHandler {
 
             AppConfig.routingTable.putValue(key, value);
 
-            // TODO uncomment
+            // uncomment
 //            RepublishValue republishValue = new RepublishValue(value);
 //            Thread thread = new Thread(republishValue);
 //            thread.start();

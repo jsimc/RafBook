@@ -1,10 +1,11 @@
-package servent.message.util;
+package app.threads;
 
 import app.AppConfig;
 import app.Cancellable;
 import app.ServentInfo;
 import app.Sleepable;
 import servent.message.PingMessage;
+import servent.message.util.MessageUtil;
 
 /**
  * Thread that will sleep for AppConfig.PING_SCHEDULE_TIME_VALUE and then check if Pong was returned.
@@ -16,7 +17,7 @@ public class PingRunnable implements Runnable, Cancellable, Sleepable {
     public void run() {
         while(this.working) {
             try {
-                Thread.sleep(20_000);
+                Thread.sleep(AppConfig.PING_SCHEDULE_MS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

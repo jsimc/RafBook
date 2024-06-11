@@ -2,9 +2,7 @@ package app;
 
 import cli.CLIParser;
 import servent.SimpleServentListener;
-import servent.message.util.PingRunnable;
-
-import java.util.logging.SimpleFormatter;
+import app.threads.PingRunnable;
 
 public class ServentMain {
 

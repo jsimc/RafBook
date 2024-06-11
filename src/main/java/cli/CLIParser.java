@@ -3,13 +3,15 @@ package cli;
 import app.AppConfig;
 import app.Cancellable;
 import app.Sleepable;
+import app.threads.RepublishValue;
 import cli.command.*;
 import servent.SimpleServentListener;
-import servent.message.util.PingRunnable;
+import app.threads.PingRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,7 +20,7 @@ public class CLIParser implements Runnable, Cancellable, Sleepable {
 
     private final List<CLICommand> commandList;
 
-    private final ExecutorService republishThreadPool = Executors.newCachedThreadPool();
+    private final List<RepublishValue> threads = new CopyOnWriteArrayList<>();
 
     public CLIParser(SimpleServentListener simpleServentListener, PingRunnable pingRunnable) {
         this.commandList = new ArrayList<>();
@@ -27,12 +29,12 @@ public class CLIParser implements Runnable, Cancellable, Sleepable {
         commandList.add(new PauseCommand());
         commandList.add(new PingCommand());
         commandList.add(new DHTGetCommand());
-        commandList.add(new DHTPutCommand(republishThreadPool));
+        commandList.add(new DHTPutCommand(threads));
         commandList.add(new AddFriendCommand());
         commandList.add(new ViewFilesCommand());
-        commandList.add(new RemoveFileCommand());
-        commandList.add(new SleepCommand(this, simpleServentListener, pingRunnable));
-        commandList.add(new StopCommand(this, simpleServentListener, pingRunnable, republishThreadPool));
+        commandList.add(new RemoveFileCommand(threads));
+        commandList.add(new SleepCommand(this, simpleServentListener, pingRunnable, threads));
+        commandList.add(new StopCommand(this, simpleServentListener, pingRunnable, threads));
     }
 
     @Override

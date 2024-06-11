@@ -17,7 +17,7 @@ public class SuzukiKasami {
 
     private volatile Token token;
 
-    private Map<ServentInfo, Integer> rn = new ConcurrentHashMap<>();
+    private final Map<ServentInfo, Integer> rn = new ConcurrentHashMap<>();
 
     // Ovo me zbunjuje jel ja treba da se vrtim u while petlji ako nemam token?
     public void lock() {

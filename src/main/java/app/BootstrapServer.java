@@ -5,10 +5,10 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BootstrapServer {
     private volatile boolean working = true;
@@ -36,7 +36,7 @@ public class BootstrapServer {
     }
 
     public BootstrapServer() {
-        this.activeServents = new ArrayList<>();
+        this.activeServents = new CopyOnWriteArrayList<>();
     }
 
     public void doBootstrap(int bsPort) {
@@ -69,7 +69,7 @@ public class BootstrapServer {
 
                     if(activeServents.size() == 0) {
                         socketWriter.write(-1 +"\n");
-                        activeServents.add(newServentPort);
+                        serventsAdd(newServentPort);
                     } else {
                         int randServent = activeServents.get(rand.nextInt(activeServents.size()));
                         socketWriter.write(randServent+"\n");
@@ -81,9 +81,14 @@ public class BootstrapServer {
                     int newServentPort = socketScanner.nextInt();
 
                     System.out.println("adding " + newServentPort);
+                    serventsAdd(newServentPort);
 
-                    activeServents.add(newServentPort);
                     newServentSocket.close();
+                } else if (message.equals("Remove")) {
+                    Integer socketToRemove = socketScanner.nextInt();
+
+                    if(this.activeServents.remove(socketToRemove))
+                        System.out.println("removing " + socketToRemove);
                 }
             } catch (SocketTimeoutException e) {
 
@@ -91,6 +96,11 @@ public class BootstrapServer {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void serventsAdd(Integer newServentPort) {
+        if(!this.activeServents.contains(newServentPort))
+            this.activeServents.add(newServentPort);
     }
 
     public static void main(String[] args) {

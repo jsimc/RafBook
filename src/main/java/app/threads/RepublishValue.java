@@ -1,8 +1,9 @@
-package servent.message.util;
+package app.threads;
 
 import app.*;
 import app.kademlia.FindNodeAnswer;
 import servent.message.DHTPutMessage;
+import servent.message.util.MessageUtil;
 
 public class RepublishValue implements Runnable, Cancellable, Sleepable {
 
@@ -21,7 +22,7 @@ public class RepublishValue implements Runnable, Cancellable, Sleepable {
     public void run() {
         while(this.working) {
             try {
-                Thread.sleep(10_000);
+                Thread.sleep(AppConfig.REPUBLISH_TIME_MS);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -50,5 +51,13 @@ public class RepublishValue implements Runnable, Cancellable, Sleepable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getKey() {
+        return key;
+    }
+
+    public MyFile getValue() {
+        return value;
     }
 }

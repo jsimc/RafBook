@@ -31,7 +31,7 @@ public class NewNodeHandler implements MessageHandler {
                 AppConfig.timestampedStandardPrint("Collision: " + newNodeId + " already exists.");
                 return;
             } else if (add == -2) {
-                // ako je taj bucket pun. pokusaj da pingujes lre
+                // ubaci softUpdate gde god budes radila i update ?
                 AppConfig.routingTable.softUpdate(newNodeInfo);
             }
 

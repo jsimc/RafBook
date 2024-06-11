@@ -17,12 +17,16 @@ public class RoutingTableImpl implements RoutingTable {
     private Map<Integer, MyFile> valueMap;
     private List<MyFile> myFiles;
 
+    private List<Bucket> cacheBuckets;
+
     public RoutingTableImpl() {
         this.buckets = new CopyOnWriteArrayList<>();
         this.valueMap = new ConcurrentHashMap<>();
         this.myFiles = new CopyOnWriteArrayList<>();
+        this.cacheBuckets = new CopyOnWriteArrayList<>();
         for (int i = 0; i <= AppConfig.ID_SIZE; i++) { // 0, 1, 2, 3, 4, 5, 6
             buckets.add(new BucketImpl(i));
+            cacheBuckets.add(new BucketImpl(i));
         }
     }
 
@@ -42,10 +46,27 @@ public class RoutingTableImpl implements RoutingTable {
     }
 
     @Override
-    public Bucket findBucket(int id) {
+    public synchronized Bucket findBucket(int id) {
         int xorNumber = this.getDistance(id);
         int prefix = this.getNodePrefix(xorNumber);
         return buckets.get(prefix);
+    }
+
+    @Override
+    public synchronized Bucket findCacheBucket(int id) {
+        int xorNumber = this.getDistance(id);
+        int prefix = this.getNodePrefix(xorNumber);
+        return cacheBuckets.get(prefix);
+    }
+
+    @Override
+    public void updateCache(ServentInfo servent) {
+        Bucket cacheBucket = this.findCacheBucket(servent.getHashId());
+        if(cacheBucket.contains(servent)) {
+            cacheBucket.pushToFront(servent);
+        } else if (cacheBucket.size() < AppConfig.BUCKET_SIZE) {
+            cacheBucket.add(servent);
+        }
     }
 
     /**
@@ -55,7 +76,7 @@ public class RoutingTableImpl implements RoutingTable {
      * @return
      */
     @Override
-    public int update(ServentInfo servent){
+    public synchronized int update(ServentInfo servent){
         Bucket bucket = this.findBucket(servent.getHashId()); // nalazimo bucket u koji cemo da ga stavimo.
         if (bucket.contains(servent)) {
             // pushToFront
@@ -67,28 +88,39 @@ public class RoutingTableImpl implements RoutingTable {
         }
 
         AppConfig.timestampedErrorPrint("Full Bucket: " + servent.getHashId());
+        // put it in cache
+        this.updateCache(servent);
         return -2;
     }
 
     @Override
     public void softUpdate(ServentInfo serventInfo) {
         if(this.update(serventInfo) == -2) {
-            // TODO mozda umesto ovde da se poziva PING message da se samo stavi ovaj servent u cacheServent
-            //  pa kad bude PingRunnable pingovao sve i kad bude izbacio
-            // ako je bucket full onda treba da pingujemo za taj bucket najstarijeg. tj bucket.get(bucket.size() -1)
-            Bucket bucket = findBucket(serventInfo.getHashId());
-            int lreServentId = bucket.getNodeIds().get(bucket.size()-1); // ovo bismo trebali da radimo za svaki a ne samo za lre?
-            ServentInfo lreServent = bucket.getNode(lreServentId);
-            PingMessage pingMessage = new PingMessage(AppConfig.myServentInfo, lreServent);
-            MessageUtil.sendMessage(pingMessage);
+            updateCache(serventInfo);
+//            // ako je bucket full onda treba da pingujemo za taj bucket najstarijeg. tj bucket.get(bucket.size() -1)
+//            Bucket bucket = findBucket(serventInfo.getHashId());
+//            int lreServentId = bucket.getNodeIds().get(bucket.size()-1); // ovo bismo trebali da radimo za svaki a ne samo za lre?
+//            ServentInfo lreServent = bucket.getNode(lreServentId);
+//            PingMessage pingMessage = new PingMessage(AppConfig.myServentInfo, lreServent);
+//            MessageUtil.sendMessage(pingMessage);
         }
     }
 
     @Override
     public void delete(ServentInfo servent) {
-        // TODO dodaj proveru da nakon delete-a ubaci iz cache liste node koji moze.
         Bucket bucket = this.findBucket(servent.getHashId());
         bucket.remove(servent);
+
+        // pokusavamo da obrisani cvor zamenimo sa nekim iz cache bucket
+        Thread thread = new Thread(() -> {
+            Bucket cacheBucket = this.findCacheBucket(servent.getHashId());
+            if(!cacheBucket.getNodeIds().isEmpty()) {
+                ServentInfo si = cacheBucket.getNode(cacheBucket.getNodeIds().get(0));
+                bucket.add(si);
+                cacheBucket.remove(si);
+            }
+        });
+        thread.start();
     }
 
     /**
@@ -97,7 +129,7 @@ public class RoutingTableImpl implements RoutingTable {
      * @return
      */
     @Override
-    public FindNodeAnswer findClosest(int destinationId) {
+    public synchronized FindNodeAnswer findClosest(int destinationId) {
         Map<ServentInfo, Integer> kClosestNodes = new LinkedHashMap<>(); // node and distance from destination so we can sort it ascending by value and get first K
         Bucket bucket = this.findBucket(destinationId); // gde se nalazi node koji trazimo, u kom bucket-u
 

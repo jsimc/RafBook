@@ -4,19 +4,20 @@ import app.AppConfig;
 import app.MyFile;
 import app.ServentInfo;
 import app.kademlia.FindNodeAnswer;
+import app.threads.RepublishValue;
 import servent.message.DHTPutMessage;
 import servent.message.util.MessageUtil;
-import servent.message.util.RepublishValue;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 public class DHTPutCommand implements CLICommand {
 
-    private final ExecutorService republishThreadPool;
-    public DHTPutCommand(ExecutorService republishThreadPool) {
-        this.republishThreadPool = republishThreadPool;
+    private final List<RepublishValue> threads;
+    public DHTPutCommand(List<RepublishValue> threads) {
+        this.threads = threads;
     }
 
     @Override
@@ -70,9 +71,10 @@ public class DHTPutCommand implements CLICommand {
                     MessageUtil.sendMessage(dhtPutMessage);
                 }
 
-                // TODO uncomment
-//                RepublishValue republishValue = new RepublishValue(myFile);
-//                republishThreadPool.submit(republishValue);
+                RepublishValue republishValue = new RepublishValue(myFile);
+                Thread thread = new Thread(republishValue);
+                thread.start();
+                this.threads.add(republishValue);
             } catch (NumberFormatException e) {
                 AppConfig.timestampedErrorPrint("Invalid key and value pair. Key should be integer between 0 and " + Math.pow(2, AppConfig.ID_SIZE)
                         + ". Value should be string indicating to file in directory: " + AppConfig.WORKSPACE);

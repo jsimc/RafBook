@@ -19,6 +19,8 @@ public class RemoveFileHandler implements MessageHandler{
     public RemoveFileHandler(Message clientMessage) {
         this.clientMessage = clientMessage;
     }
+
+    // ovde treba dist lock
     @Override
     public void run() {
         if(clientMessage.getMessageType() == MessageType.REMOVE_FILE) {

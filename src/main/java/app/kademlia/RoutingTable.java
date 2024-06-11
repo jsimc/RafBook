@@ -11,7 +11,9 @@ import java.util.Map;
 public interface RoutingTable extends Serializable {
     int getNodePrefix(int id);
     Bucket findBucket(int id);
+    Bucket findCacheBucket(int id);
     int update(ServentInfo servent); // FullBucketException
+    void updateCache(ServentInfo servent);
     void softUpdate(ServentInfo serventInfo);
     void delete(ServentInfo servent);
     FindNodeAnswer findClosest(int destinationId);

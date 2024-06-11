@@ -13,7 +13,7 @@ public class ServentInfo implements Serializable {
     private final String ipAddress;
     private final int listenerPort;
 
-    private Set<ServentInfo> friends;
+    private final Set<ServentInfo> friends;
 
     public ServentInfo(int id, String ipAddress, int listenerPort) {
         this.ipAddress = ipAddress;

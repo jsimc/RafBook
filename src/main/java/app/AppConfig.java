@@ -21,8 +21,6 @@ public class AppConfig {
 
     public static ServentInfo myServentInfo;
 
-    public static boolean INITIALIZED = false;
-
     public static int BOOTSTRAP_PORT;
 
     public static int SERVENT_COUNT;
@@ -30,13 +28,17 @@ public class AppConfig {
     ///////////////////////////////////////////////////
     public static int ID_SIZE = 6; // number of nodes in the system = Math.pow(2, ID_SIZE);
     public static int BUCKET_SIZE = 4; // size of each bucket (ovo JESTE broj K!!!)
-    public static int PING_SCHEDULE_TIME_VALUE; // in milliseconds
+    public static int PING_SCHEDULE_MS; // in milliseconds
+    public static int REPUBLISH_TIME_MS;
 
     public static Map<ServentInfo, Boolean> isAlive = new ConcurrentHashMap<>(); // key: servent, value: true if alive.
 
     public static RoutingTable routingTable;
 
     public static SuzukiKasami mutex;
+    public static final Object lock = new Object();
+
+    public static boolean sleep = false;
 
     public static void readConfig(String configName, int serventId) {
         Properties properties = new Properties();
@@ -76,9 +78,15 @@ public class AppConfig {
         }
 
         try {
-            PING_SCHEDULE_TIME_VALUE = Integer.parseInt(properties.getProperty("ping_schedule_time"));
+            PING_SCHEDULE_MS = Integer.parseInt(properties.getProperty("ping_schedule_ms"));
         } catch (NumberFormatException e) {
-            timestampedErrorPrint("Problem reading ping_schedule_time. Exiting...");
+            timestampedErrorPrint("Problem reading ping_schedule_ms. Exiting...");
+            System.exit(0);
+        }
+        try {
+            REPUBLISH_TIME_MS = Integer.parseInt(properties.getProperty("republish_time_ms"));
+        } catch (NumberFormatException e) {
+            timestampedErrorPrint("Problem reading republish_time_ms. Exiting...");
             System.exit(0);
         }
 
@@ -113,6 +121,8 @@ public class AppConfig {
         routingTable.update(myServentInfo);
 
         mutex = new SuzukiKasami();
+
+        if(serventPort == 1400 || serventPort == 1115) sleep = true;
     }
 
     public static void timestampedStandardPrint(String message) {
@@ -134,8 +144,7 @@ public class AppConfig {
     }
 
     public static int valueHash(String value) {
-        return Math.abs(value.hashCode());
-//        return hash(value.hashCode());
+        return hash(value.hashCode());
     }
     public static boolean isSame(Set<ServentInfo> serventInfoSet, List<ServentInfo> newNodesList) {
         for(ServentInfo serventInfo : newNodesList) {

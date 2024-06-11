@@ -9,7 +9,7 @@ public class TellCheckNodeMessage  extends BasicMessage {
     private final CheckResult checkResult;
 
     public TellCheckNodeMessage(ServentInfo senderPort, ServentInfo receiverPort, ServentInfo node, CheckResult checkResult) {
-        super(MessageType.CHECK_NODE, senderPort, receiverPort, "TELL_CHECK_NODE_"+node.getHashId());
+        super(MessageType.TELL_CHECK_NODE, senderPort, receiverPort, "TELL_CHECK_NODE_"+node.getHashId());
         this.node = node;
         this.checkResult = checkResult;
     }

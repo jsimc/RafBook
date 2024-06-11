@@ -25,6 +25,17 @@ public class PingHandler implements MessageHandler{
              * because we want this system to be completely asynchronous.
              */
             // updateRoutingTable!
+
+            if(AppConfig.sleep) {
+                try {
+                    Thread.sleep(AppConfig.SOFT_RESET_MS+1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                AppConfig.sleep = false;
+            }
+
+
             AppConfig.routingTable.update(clientMessage.getSender());
             // stavicu kod sebe tog sendera da vidim da je ziv
             AppConfig.isAlive.put(clientMessage.getSender(), true);

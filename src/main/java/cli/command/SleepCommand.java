@@ -1,18 +1,23 @@
 package cli.command;
 
 import app.AppConfig;
+import app.threads.RepublishValue;
 import cli.CLIParser;
 import servent.SimpleServentListener;
-import servent.message.util.PingRunnable;
+import app.threads.PingRunnable;
+
+import java.util.List;
 
 public class SleepCommand implements CLICommand{
     private CLIParser cliParser;
     private SimpleServentListener simpleServentListener;
     private PingRunnable pingRunnable;
-    public SleepCommand(CLIParser parser, SimpleServentListener listener, PingRunnable pingRunnable) {
+    private List<RepublishValue> threads;
+    public SleepCommand(CLIParser parser, SimpleServentListener listener, PingRunnable pingRunnable, List<RepublishValue> threads) {
         this.cliParser = parser;
         this.simpleServentListener = listener;
         this.pingRunnable = pingRunnable;
+        this.threads = threads;
     }
 
     @Override
@@ -38,5 +43,8 @@ public class SleepCommand implements CLICommand{
         cliParser.sleep(length);
         simpleServentListener.sleep(length);
         pingRunnable.sleep(length);
+        for (RepublishValue rv : threads) {
+            rv.sleep(length);
+        }
     }
 }
