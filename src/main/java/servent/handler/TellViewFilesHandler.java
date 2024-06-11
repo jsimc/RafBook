@@ -21,10 +21,13 @@ public class TellViewFilesHandler implements MessageHandler {
     @Override
     public void run() {
         if(clientMessage.getMessageType() == MessageType.TELL_VIEW_FILES) {
-            List<MyFile> fileList = ((TellViewFilesMessage) clientMessage).getMyFileList();
-            if(fileList != null){
-                AppConfig.timestampedStandardPrint("Files from node " + clientMessage.getSender());
-                fileList.forEach(file -> AppConfig.timestampedStandardPrint(file.toString()));
+            synchronized (AppConfig.lock) {
+                List<MyFile> fileList = ((TellViewFilesMessage) clientMessage).getMyFileList();
+                if(fileList != null){
+                    AppConfig.timestampedStandardPrint("Files from node " + clientMessage.getSender());
+                    fileList.forEach(file -> AppConfig.timestampedStandardPrint(file.toString()));
+                }
+                if(AppConfig.mutex.isHaveToken()) AppConfig.mutex.unlock();
             }
         } else {
             AppConfig.timestampedErrorPrint("TELL_VIEW_FILES Handler got something else: " + clientMessage.getMessageType());

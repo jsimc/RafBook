@@ -1,6 +1,8 @@
 package app.mutex;
 
+import app.AppConfig;
 import app.ServentInfo;
+import app.kademlia.ServentInfoHashIdComparator;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -9,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class Token implements Serializable {
-    private static final long serialVersionUID = 2084490973699262440L;
+    private static final long serialVersionUID = 2084690973699262440L;
 
     // LN, key: Servent, value: Seq number for the last time servent used token.
     private Map<ServentInfo, Integer> ln;
@@ -19,7 +21,7 @@ public class Token implements Serializable {
 
     public Token() {
         ln = new ConcurrentHashMap<>();
-        queue = new PriorityBlockingQueue<>();
+        queue = new PriorityBlockingQueue<>(AppConfig.SERVENT_COUNT, new ServentInfoHashIdComparator());
     }
 
     public Map<ServentInfo, Integer> getLn() {
@@ -31,7 +33,7 @@ public class Token implements Serializable {
     }
 
     public int getLNForServentInfo(ServentInfo serventInfo) {
-        return this.ln.get(serventInfo);
+        return this.ln.getOrDefault(serventInfo, 0);
     }
 
     public int updateLN(ServentInfo serventInfo, int rn) {
@@ -47,5 +49,13 @@ public class Token implements Serializable {
 
     public boolean isQueueEmpty() {
         return this.queue.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return "Token{" +
+                "ln=" + ln +
+                ", queue=" + queue +
+                '}';
     }
 }

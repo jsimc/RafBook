@@ -24,7 +24,7 @@ public class TellCheckNodeHandler implements MessageHandler{
         if(clientMessage.getMessageType() == MessageType.TELL_CHECK_NODE) {
             CheckResult checkResult = ((TellCheckNodeMessage)clientMessage).getCheckResult();
             ServentInfo nodeToCheck = ((TellCheckNodeMessage)clientMessage).getNode();
-            synchronized (AppConfig.lock) {
+            synchronized (AppConfig.checkNodeLock) {
                 System.out.println("CHECK RESUULT: " + checkResult);
                 if(checkResult.equals(CheckResult.FAIL)) {
                     // ako je fail odmah ga izbacuj
@@ -33,18 +33,18 @@ public class TellCheckNodeHandler implements MessageHandler{
                         AppConfig.isAlive.put(nodeToCheck, false);
 //                        AppConfig.isAlive.remove(nodeToCheck);
 
-                        AppConfig.timestampedErrorPrint("REMOVING " + nodeToCheck.getListenerPort());
-                        try {
-                            Socket bsSocket = new Socket("localhost", AppConfig.BOOTSTRAP_PORT);
-
-                            PrintWriter bsWriter = new PrintWriter(bsSocket.getOutputStream());
-                            bsWriter.write("Remove\n" + nodeToCheck.getListenerPort() + "\n");
-
-                            bsWriter.flush();
-                            bsSocket.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+//                        AppConfig.timestampedErrorPrint("REMOVING " + nodeToCheck.getListenerPort());
+//                        try {
+//                            Socket bsSocket = new Socket("localhost", AppConfig.BOOTSTRAP_PORT);
+//
+//                            PrintWriter bsWriter = new PrintWriter(bsSocket.getOutputStream());
+//                            bsWriter.write("Remove\n" + nodeToCheck.getListenerPort() + "\n");
+//
+//                            bsWriter.flush();
+//                            bsSocket.close();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
                     }
                 } else {
                     AppConfig.timestampedErrorPrint("ALL GOOD! Node " + nodeToCheck.getListenerPort() + " is alive!");

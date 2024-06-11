@@ -33,51 +33,53 @@ public class DHTPutCommand implements CLICommand {
             int key;
             String value = "";
             Boolean isPublic;
-            try {
-                value = splitArgs[0];
-                key = AppConfig.valueHash(value);
-                isPublic = splitArgs[1].equals("public") ? Boolean.TRUE : (splitArgs[1].equals("private") ? Boolean.FALSE : null);
+            synchronized (AppConfig.lock) {
+                try {
+                    value = splitArgs[0];
+                    key = AppConfig.valueHash(value);
+                    isPublic = splitArgs[1].equals("public") ? Boolean.TRUE : (splitArgs[1].equals("private") ? Boolean.FALSE : null);
 
-                if(isPublic == null) {
-                    AppConfig.timestampedStandardPrint("File can be either \"public\" or \"private\". You entered: " + splitArgs[1]);
-                    return;
-                }
-
-                File file = new File(String.valueOf(Path.of(AppConfig.WORKSPACE, value)));
-                if(!file.exists() || !file.isFile()) {
-                    AppConfig.timestampedErrorPrint("File: " + file.getName() + " does not exist in directory: " + AppConfig.WORKSPACE);
-                    return;
-                }
-
-                MyFile myFile = new MyFile(key, file, AppConfig.myServentInfo, isPublic);
-
-                if(AppConfig.routingTable.containsValue(key)) {
-                    // ne bi trebalo nista da uradim.
-                    AppConfig.timestampedStandardPrint("Already have key: " + key);
-                    return;
-                }
-
-                AppConfig.routingTable.putValue(key, myFile);
-                AppConfig.routingTable.addToMyFiles(myFile);
-                FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(key);
-
-                for(ServentInfo serventInfo : findNodeAnswer.getNodes()) {
-                    if(serventInfo.equals(AppConfig.myServentInfo)) {
-//                        AppConfig.routingTable.putValue(key, value);
-                        continue;
+                    if(isPublic == null) {
+                        AppConfig.timestampedStandardPrint("File can be either \"public\" or \"private\". You entered: " + splitArgs[1]);
+                        return;
                     }
 
-                    DHTPutMessage dhtPutMessage = new DHTPutMessage(AppConfig.myServentInfo, serventInfo, myFile);
-                    MessageUtil.sendMessage(dhtPutMessage);
-                }
+                    File file = new File(String.valueOf(Path.of(AppConfig.WORKSPACE, value)));
+                    if(!file.exists() || !file.isFile()) {
+                        AppConfig.timestampedErrorPrint("File: " + file.getName() + " does not exist in directory: " + AppConfig.WORKSPACE);
+                        return;
+                    }
 
-                RepublishValue republishValue = new RepublishValue(myFile);
-                Thread thread = new Thread(republishValue);
-                thread.start();
-                this.threads.add(republishValue);
-            } catch (NumberFormatException e) {
-                AppConfig.timestampedErrorPrint("Invalid key and value pair. Key should be integer between 0 and " + Math.pow(2, AppConfig.ID_SIZE)
-                        + ". Value should be string indicating to file in directory: " + AppConfig.WORKSPACE);
+                    MyFile myFile = new MyFile(key, file, AppConfig.myServentInfo, isPublic);
+
+                    if(AppConfig.routingTable.containsValue(key)) {
+                        // ne bi trebalo nista da uradim.
+                        AppConfig.timestampedStandardPrint("Already have key: " + key);
+                        return;
+                    }
+
+                    AppConfig.routingTable.putValue(key, myFile);
+                    AppConfig.routingTable.addToMyFiles(myFile);
+                    FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(key);
+
+                    for(ServentInfo serventInfo : findNodeAnswer.getNodes()) {
+                        if(serventInfo.equals(AppConfig.myServentInfo)) {
+    //                        AppConfig.routingTable.putValue(key, value);
+                            continue;
+                        }
+
+                        DHTPutMessage dhtPutMessage = new DHTPutMessage(AppConfig.myServentInfo, serventInfo, myFile);
+                        MessageUtil.sendMessage(dhtPutMessage);
+                    }
+
+                    RepublishValue republishValue = new RepublishValue(myFile);
+                    Thread thread = new Thread(republishValue);
+                    thread.start();
+                    this.threads.add(republishValue);
+                } catch (NumberFormatException e) {
+                    AppConfig.timestampedErrorPrint("Invalid key and value pair. Key should be integer between 0 and " + Math.pow(2, AppConfig.ID_SIZE)
+                            + ". Value should be string indicating to file in directory: " + AppConfig.WORKSPACE);
+                }
             }
         } else {
             AppConfig.timestampedErrorPrint("Invalid arguments for put");

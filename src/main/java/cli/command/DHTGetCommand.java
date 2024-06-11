@@ -22,12 +22,20 @@ public class DHTGetCommand implements CLICommand{
             if(AppConfig.routingTable.containsValue(key)) {
                 AppConfig.timestampedStandardPrint("Value: " + AppConfig.routingTable.getValue(key));
             } else {
-                FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(key);
-                findNodeAnswer.getNodes().forEach(serventInfo -> {
-                    if(serventInfo.getHashId() == AppConfig.myServentInfo.getHashId()) return;
-                    DHTGetMessage dhtGetMessage = new DHTGetMessage(AppConfig.myServentInfo, serventInfo, key, AppConfig.myServentInfo, 0);
-                    MessageUtil.sendMessage(dhtGetMessage);
-                });
+                synchronized (AppConfig.lock) {
+                    AppConfig.mutex.lock();
+//                try {
+//                    Thread.sleep(10_000);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+                    FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(key);
+                    findNodeAnswer.getNodes().forEach(serventInfo -> {
+                        if(serventInfo.getHashId() == AppConfig.myServentInfo.getHashId()) return;
+                        DHTGetMessage dhtGetMessage = new DHTGetMessage(AppConfig.myServentInfo, serventInfo, key, AppConfig.myServentInfo, 0);
+                        MessageUtil.sendMessage(dhtGetMessage);
+                    });
+                }
             }
         } else {
             AppConfig.timestampedErrorPrint("Invalid argument for dht_get: " + args + ". Should be filename, which is one string.");

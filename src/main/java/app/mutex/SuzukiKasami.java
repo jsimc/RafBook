@@ -2,10 +2,12 @@ package app.mutex;
 
 import app.AppConfig;
 import app.ServentInfo;
+import app.kademlia.FindNodeAnswer;
 import servent.message.ReplyTokenMessage;
 import servent.message.RequestTokenMessage;
 import servent.message.util.MessageUtil;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,33 +17,38 @@ public class SuzukiKasami {
     private volatile boolean haveToken = false;
     private volatile boolean wantLock = false;
 
+    private volatile boolean firstToken = false;
+
     private volatile Token token;
 
     private final Map<ServentInfo, Integer> rn = new ConcurrentHashMap<>();
 
     // Ovo me zbunjuje jel ja treba da se vrtim u while petlji ako nemam token?
-    public void lock() {
+    public synchronized void lock() {
         this.wantLock = true;
         if(!haveToken) {
             // incrementing my RN
             rn.compute(AppConfig.myServentInfo, (k, v) -> (v == null) ? 1 : v + 1);
             // sends REQUEST MESSAGE to myKClosest ?
-            for(ServentInfo serventInfo : AppConfig.routingTable.findClosest(AppConfig.myServentInfo.getHashId()).getNodes()) {
+            FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(AppConfig.myServentInfo.getHashId());
+            for(ServentInfo serventInfo : findNodeAnswer.getNodes()) {
+                if(AppConfig.myServentInfo.equals(serventInfo)) continue;
                 RequestTokenMessage requestTokenMessage = new RequestTokenMessage(AppConfig.myServentInfo, serventInfo,
-                        AppConfig.myServentInfo, rn.get(AppConfig.myServentInfo));
+                        AppConfig.myServentInfo, rn.get(AppConfig.myServentInfo), new HashSet<>(findNodeAnswer.getNodes()));
                 MessageUtil.sendMessage(requestTokenMessage);
             }
         }
         while(!haveToken) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        System.out.println("Done locking!");
     }
 
-    public void unlock() {
+    public synchronized void unlock() {
         // sets LN[i] = RNi[i] to indicate that its critical section request RNi[i] has been executed
         this.wantLock = false;
         this.token.updateLN(AppConfig.myServentInfo, rn.get(AppConfig.myServentInfo));
@@ -52,13 +59,7 @@ public class SuzukiKasami {
 
 //        After above update, if the Queue Q is non-empty, it
 //        pops a site ID from the Q and sends the token to site indicated by popped ID.
-        if(!token.isQueueEmpty()) {
-            this.haveToken = false;
-            ReplyTokenMessage replyTokenMessage = new ReplyTokenMessage(
-                    AppConfig.myServentInfo, token.popFromQueue(),
-                    this.token);
-            MessageUtil.sendMessage(replyTokenMessage);
-        }
+        sendToken();
     }
 
     public Map<ServentInfo, Integer> getAllSequenceNumbers() {
@@ -89,7 +90,22 @@ public class SuzukiKasami {
 
     public void setFirstHaveToken(boolean haveToken) {
         this.haveToken = haveToken;
+        this.firstToken = true;
         token = new Token();
+    }
+
+    public boolean isFirstToken() {
+        return firstToken;
+    }
+
+    public synchronized void sendToken() {
+        if(!token.isQueueEmpty()) {
+            this.haveToken = false;
+            ReplyTokenMessage replyTokenMessage = new ReplyTokenMessage(
+                    AppConfig.myServentInfo, token.popFromQueue(),
+                    this.token);
+            MessageUtil.sendMessage(replyTokenMessage);
+        }
     }
 
     public void setWantLock(boolean wantLock) {

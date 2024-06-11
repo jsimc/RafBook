@@ -143,6 +143,8 @@ public class RoutingTableImpl implements RoutingTable {
                 addToMap(bucketP, kClosestNodes, destinationId);
             }
 
+            if(kClosestNodes.size() >= AppConfig.BUCKET_SIZE) break;
+
             if (bucket.getId() + i <= AppConfig.ID_SIZE) {
                 Bucket bucketN = this.buckets.get(bucket.getId() + i);
                 addToMap(bucketN, kClosestNodes, destinationId);
@@ -205,6 +207,7 @@ public class RoutingTableImpl implements RoutingTable {
         for(int id : bucket.getNodeIds()) {
             ServentInfo node = bucket.getNode(id);
             answerNodes.put(node, node.getHashId()^destinationId);
+            if(answerNodes.size() >= AppConfig.BUCKET_SIZE) return;
         }
     }
 

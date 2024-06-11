@@ -28,9 +28,14 @@ public class InfoCommand implements CLICommand{
             AppConfig.timestampedStandardPrint("key: " + entry.getKey() + ", value: " + entry.getValue());
         }
 
-        AppConfig.timestampedStandardPrint("friends: ");
+        if(!AppConfig.myServentInfo.getFriends().isEmpty())
+            AppConfig.timestampedStandardPrint("friends: ");
         for(ServentInfo si : AppConfig.myServentInfo.getFriends()) {
             AppConfig.timestampedStandardPrint(String.valueOf(si));
+        }
+
+        if(AppConfig.mutex.isHaveToken()) {
+            AppConfig.timestampedStandardPrint("I have token: " + AppConfig.mutex.getToken());
         }
     }
 }

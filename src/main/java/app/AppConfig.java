@@ -37,6 +37,8 @@ public class AppConfig {
 
     public static SuzukiKasami mutex;
     public static final Object lock = new Object();
+    public static final Object checkNodeLock = new Object();
+    public static final Object reqTokenLock = new Object();
 
     public static boolean sleep = false;
 

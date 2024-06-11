@@ -17,14 +17,17 @@ public class ViewFilesCommand implements CLICommand{
     public void execute(String args) { // view_files 1225
         if(args.split(" ").length == 1) {
             try {
-                int port = Integer.parseInt(args.split(" ")[0]);
-                int portHashId = AppConfig.hash(port);
-
-                FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(portHashId);
-                findNodeAnswer.getNodes().forEach(serventInfo -> {
-                    ViewFilesMessage viewFilesMessage = new ViewFilesMessage(AppConfig.myServentInfo, serventInfo, AppConfig.myServentInfo, portHashId, new HashSet<>(findNodeAnswer.getNodes()));
-                    MessageUtil.sendMessage(viewFilesMessage);
-                });
+                synchronized (AppConfig.lock){
+                    int port = Integer.parseInt(args.split(" ")[0]);
+                    int portHashId = AppConfig.hash(port);
+                    AppConfig.mutex.lock();
+                    System.out.println("Sending view files!");
+                    FindNodeAnswer findNodeAnswer = AppConfig.routingTable.findClosest(portHashId);
+                    findNodeAnswer.getNodes().forEach(serventInfo -> {
+                        ViewFilesMessage viewFilesMessage = new ViewFilesMessage(AppConfig.myServentInfo, serventInfo, AppConfig.myServentInfo, portHashId, new HashSet<>(findNodeAnswer.getNodes()));
+                        MessageUtil.sendMessage(viewFilesMessage);
+                    });
+                }
             } catch (NumberFormatException e) {
                 AppConfig.timestampedStandardPrint("Argument for view_files should be integer.");
             }

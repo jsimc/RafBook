@@ -50,7 +50,7 @@ public class MultipleServentStarter {
         }
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -63,8 +63,8 @@ public class MultipleServentStarter {
                         testName+"/servent_list.properties", String.valueOf(i));
 
                 builder.redirectOutput(new File(testName+"/output/servent"+i+"_out.txt"));
-                builder.redirectOutput(new File(testName+"/error/servent"+i+"_err.txt"));
-                builder.redirectOutput(new File(testName+"/input/servent"+i+"_in.txt"));
+                builder.redirectError(new File(testName+"/error/servent"+i+"_err.txt"));
+                builder.redirectInput(new File(testName+"/input/servent"+i+"_in.txt"));
 
                 Process p = builder.start();
                 serventProcesses.add(p);
@@ -72,7 +72,7 @@ public class MultipleServentStarter {
                 e.printStackTrace();
             }
             try { // 10s for each node !!! should be changed !
-                Thread.sleep(10_000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -98,7 +98,7 @@ public class MultipleServentStarter {
     }
 
     public static void main(String[] args) {
-//        startServentTest("kademlia");
-        startServentTest("chord"); // chord mozda cu ja nesto drugo da radim ?
+        startServentTest("kademlia");
+//        startServentTest("chord"); // chord mozda cu ja nesto drugo da radim ?
     }
 }

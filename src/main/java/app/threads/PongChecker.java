@@ -25,7 +25,7 @@ public class PongChecker implements Runnable{
             throw new RuntimeException(e);
         }
 
-        synchronized (AppConfig.lock) {
+        synchronized (AppConfig.checkNodeLock) {
             if(!AppConfig.isAlive.get(serventInfo)) {
                 // treba se zabrinuti --> soft reset
                 AppConfig.timestampedErrorPrint("Servent: " + serventInfo + " may not be alive. Need to check it.");

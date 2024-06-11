@@ -23,6 +23,8 @@ public class DHTTellGetHandler implements MessageHandler {
             MyFile value = dhtTellGetMessage.getValue();
 
             if(AppConfig.routingTable.containsValue(key)) return; // dobili smo je od nekog drugog vec.
+
+            AppConfig.mutex.unlock();
             // mogli bismo iz predostroznosti da je sacuvamo kod nas
             AppConfig.routingTable.putValue(key, value);
 

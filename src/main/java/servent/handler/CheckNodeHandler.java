@@ -18,7 +18,7 @@ public class CheckNodeHandler implements MessageHandler{
         if(clientMessage.getMessageType() == MessageType.CHECK_NODE) {
             ServentInfo nodeToCheck = ((CheckNodeMessage)clientMessage).getNodeToCheck();
 
-            synchronized (AppConfig.lock) {
+            synchronized (AppConfig.checkNodeLock) {
                 if(AppConfig.myServentInfo.equals(nodeToCheck)) {
                     TellCheckNodeMessage tellCheckNodeMessage = new TellCheckNodeMessage(AppConfig.myServentInfo, clientMessage.getSender(), nodeToCheck, CheckResult.SUCCESS);
                     MessageUtil.sendMessage(tellCheckNodeMessage);
